@@ -46,14 +46,18 @@ func (service *serviceUsers) Login(email string, password string) (string, error
 		return "User Not Found", businesses.ErrUserNotFound
 	}
 	if !helpers.ValidateHash(password, user.Password) {
-		return "Error Validate Hash", err
+		return "Error Validate Hash", businesses.ErrInvalidLogin
 	}
 	token := service.jwtAuth.GenerateToken(user.ID)
 	return token, err
 }
 
 func (service *serviceUsers) FindByID(id int) (*Domain, error) {
-	panic("implement me")
+	user, err := service.FindByID(id)
+	if err != nil {
+		return &Domain{}, businesses.ErrUserNotFound
+	}
+	return user, nil
 }
 
 func (service *serviceUsers) EmailAvailable(email string) (bool, error) {

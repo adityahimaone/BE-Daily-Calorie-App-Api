@@ -5,8 +5,8 @@ import "time"
 type Domain struct {
 	ID int
 	Calorie float64
-	Weight float64
-	Height float64
+	Weight int
+	Height int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

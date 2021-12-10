@@ -5,4 +5,5 @@ var (
 	ErrUserNotFound = errors.New("User not found")
 	ErrEmailNotFound = errors.New("Email not found")
 	ErrInsertData = errors.New("Insert Data Failed")
+	ErrInvalidLogin = errors.New("Invalid Login")
 )
