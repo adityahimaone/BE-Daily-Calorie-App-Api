@@ -1,6 +1,9 @@
 package users
 
-import "time"
+import (
+	"Daily-Calorie-App-API/businesses/personaldata"
+	"time"
+)
 
 type Domain struct {
 	ID int
@@ -9,15 +12,16 @@ type Domain struct {
 	Password string
 	AvatarUrl string
 	Gender string
+	PersonalDataID int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
 type Service interface{
-	RegisterUser(user *Domain) (*Domain, error)
+	RegisterUser(userData *Domain, personalData *personaldata.Domain) (*Domain, error)
 	Login(email string, password string) (string, error)
 	FindByID(id int) (*Domain, error)
-	FindByEmail(email string) (*Domain, error)
+	EmailAvailable(email string) (bool, error)
 	GetAllUsers() ([]*Domain, error)
 	EditUser(id int,user *Domain) (*Domain, error)
 	DeleteUser(id int, user *Domain) (*Domain,error)
