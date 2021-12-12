@@ -15,11 +15,8 @@ type User struct {
 	Gender         string                `json:"gender"`
 	PersonalDataID int                   `json:"personal_data_id"`
 	PersonalData   response.PersonalData `json:"personalData"`
-	//Calorie        float64               `json:"calorie"`
-	//Weight         int                   `json:"weight"`
-	//Height         int                   `json:"height"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	CreatedAt      time.Time             `json:"createdAt"`
+	UpdatedAt      time.Time             `json:"updatedAt"`
 }
 
 func FromDomain(domain users.Domain, domainData personaldata.Domain) User {

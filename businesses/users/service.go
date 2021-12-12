@@ -5,6 +5,7 @@ import (
 	"Daily-Calorie-App-API/businesses"
 	"Daily-Calorie-App-API/businesses/personaldata"
 	"Daily-Calorie-App-API/helpers"
+	"log"
 )
 
 type serviceUsers struct {
@@ -48,12 +49,17 @@ func (service *serviceUsers) Login(email string, password string) (string, error
 	return token, err
 }
 
-func (service *serviceUsers) FindByID(id int) (*Domain, error) {
-	user, err := service.FindByID(id)
+func (service *serviceUsers) FindByID(id int) (*Domain, *personaldata.Domain, error) {
+	user, err := service.userRepository.FindByID(id)
 	if err != nil {
-		return &Domain{}, businesses.ErrUserNotFound
+		return &Domain{}, &personaldata.Domain{}, businesses.ErrUserNotFound
 	}
-	return user, nil
+	personalData, err := service.personaldataRepository.FindByID(user.PersonalDataID)
+	if err != nil {
+		return &Domain{}, &personaldata.Domain{}, businesses.ErrUserNotFound
+	}
+	log.Println("personalData", personalData)
+	return user, personalData, nil
 }
 
 func (service *serviceUsers) EmailAvailable(email string) (bool, error) {
