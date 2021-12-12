@@ -33,5 +33,10 @@ func (repository repositoryPersonalData) Delete(personaldata *personaldata.Domai
 }
 
 func (repository repositoryPersonalData) FindByID(id int) (*personaldata.Domain, error) {
-	panic("implement me")
+	recordPersonalData := PersonalData{}
+	if err := repository.DB.First(&recordPersonalData, id).Error; err != nil {
+		return &personaldata.Domain{}, err
+	}
+	result := toDomain(recordPersonalData)
+	return &result, nil
 }
