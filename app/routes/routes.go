@@ -15,4 +15,5 @@ func (handler *HandlerList) RouteRegister(e *echo.Echo) {
 	//User Endpoint
 	group.POST("/users/register", handler.UserController.RegisterUser)
 	group.GET("/users/:id", handler.UserController.GetUserById)
+	group.PUT("/users/:id", handler.UserController.UpdateUser)
 }

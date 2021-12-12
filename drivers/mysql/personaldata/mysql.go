@@ -24,8 +24,13 @@ func (repository repositoryPersonalData) Insert(personalData *personaldata.Domai
 	return &result, nil
 }
 
-func (repository repositoryPersonalData) Update(personaldata *personaldata.Domain) (*personaldata.Domain, error) {
-	panic("implement me")
+func (repository repositoryPersonalData) Update(id int, personalData *personaldata.Domain) (*personaldata.Domain, error) {
+	recordPersonalData := fromDomain(*personalData)
+	if err := repository.DB.Model(&recordPersonalData).Where("id = ?", id).Updates(&recordPersonalData).Error; err != nil {
+		return &personaldata.Domain{}, err
+	}
+	result := toDomain(recordPersonalData)
+	return &result, nil
 }
 
 func (repository repositoryPersonalData) Delete(personaldata *personaldata.Domain) (*personaldata.Domain, error) {

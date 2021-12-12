@@ -21,7 +21,8 @@ type UserLogin struct {
 	Password string `json:"password"`
 }
 
-func (request *User) ToDomain() (*users.Domain, *personaldata.Domain) {
+
+func ToDomain(request *User) (*users.Domain, *personaldata.Domain) {
 	return &users.Domain{
 			Name:           request.Name,
 			Email:          request.Email,

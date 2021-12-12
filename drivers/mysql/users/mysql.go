@@ -26,7 +26,15 @@ func (repository repositoryUsers) Insert(user *users.Domain) (*users.Domain, err
 }
 
 func (repository repositoryUsers) Update(id int, user *users.Domain) (*users.Domain, error) {
-	panic("implement me")
+	recordUser := fromDomain(*user)
+	if err := repository.DB.Model(&recordUser).Where("id = ?", id).Updates(&recordUser).Error; err != nil {
+		return &users.Domain{}, err
+	}
+	if err := repository.DB.Where("id = ?", id).First(&recordUser).Error; err != nil {
+		return &users.Domain{}, err
+	}
+	result := toDomain(recordUser)
+	return &result, nil
 }
 
 func (repository repositoryUsers) FindByID(id int) (*users.Domain, error) {
