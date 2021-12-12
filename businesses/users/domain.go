@@ -24,7 +24,7 @@ type Service interface {
 	FindByID(id int) (*Domain, *personaldata.Domain, error)
 	EmailAvailable(email string) (bool, error)
 	GetAllUsers() ([]*Domain, error)
-	EditUser(id int, user *Domain) (*Domain, error)
+	EditUser(id int, user *Domain, personalData *personaldata.Domain) (*Domain, *personaldata.Domain, error)
 	DeleteUser(id int, user *Domain) (*Domain, error)
 }
 

@@ -15,7 +15,7 @@ type Users struct {
 	AvatarUrl      string `gorm:"type:varchar(255);not null"`
 	Gender         string `gorm:"type:varchar(100);not null"`
 	PersonalDataID uint
-	PersonalData   personaldata.PersonalData `gorm:"constraint:OnUpdate:NO ACTION,OnDelete:NO ACTION"`
+	PersonalData   personaldata.PersonalData `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func toDomain(record Users) users.Domain {
