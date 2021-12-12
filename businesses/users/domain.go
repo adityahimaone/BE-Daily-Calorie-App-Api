@@ -21,7 +21,7 @@ type Domain struct {
 type Service interface {
 	RegisterUser(userData *Domain, personalData *personaldata.Domain) (*Domain, *personaldata.Domain, error)
 	Login(email string, password string) (string, error)
-	FindByID(id int) (*Domain, error)
+	FindByID(id int) (*Domain, *personaldata.Domain, error)
 	EmailAvailable(email string) (bool, error)
 	GetAllUsers() ([]*Domain, error)
 	EditUser(id int, user *Domain) (*Domain, error)

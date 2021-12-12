@@ -3,6 +3,7 @@ package users
 import (
 	"Daily-Calorie-App-API/businesses/users"
 	"gorm.io/gorm"
+	"log"
 )
 
 type repositoryUsers struct {
@@ -34,6 +35,7 @@ func (repository repositoryUsers) FindByID(id int) (*users.Domain, error) {
 		return &users.Domain{}, err
 	}
 	result := toDomain(recordUser)
+	log.Println(result)
 	return &result, nil
 }
 
