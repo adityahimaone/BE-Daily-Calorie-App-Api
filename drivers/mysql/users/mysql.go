@@ -17,7 +17,7 @@ func NewRepositoryMySQL(db *gorm.DB) users.Repository {
 
 func (repository repositoryUsers) Insert(user *users.Domain) (*users.Domain, error) {
 	recordUser := fromDomain(*user)
-	if err:= repository.DB.Create(&recordUser).Error; err != nil {
+	if err := repository.DB.Create(&recordUser).Error; err != nil {
 		return &users.Domain{}, err
 	}
 	result := toDomain(recordUser)
@@ -29,7 +29,12 @@ func (repository repositoryUsers) Update(id int, user *users.Domain) (*users.Dom
 }
 
 func (repository repositoryUsers) FindByID(id int) (*users.Domain, error) {
-	panic("implement me")
+	recordUser := Users{}
+	if err := repository.DB.Where("id = ?", id).First(&recordUser).Error; err != nil {
+		return &users.Domain{}, err
+	}
+	result := toDomain(recordUser)
+	return &result, nil
 }
 
 func (repository repositoryUsers) FindByEmail(email string) (*users.Domain, error) {
