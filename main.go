@@ -52,6 +52,7 @@ func main() {
 
 	// initial of route
 	routesInit := routes.HandlerList{
+		JWTMiddleware:  configJWT.Init(),
 		UserController: *userController,
 	}
 	routesInit.RouteRegister(e)

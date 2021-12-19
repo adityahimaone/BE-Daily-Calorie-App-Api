@@ -70,8 +70,12 @@ func (service *serviceUsers) EmailAvailable(email string) (bool, error) {
 	return false, nil
 }
 
-func (service *serviceUsers) GetAllUsers() ([]*Domain, error) {
-	panic("implement me")
+func (service *serviceUsers) GetAllUsers() (*[]Domain, error) {
+	users, err := service.userRepository.GetAllUsers()
+	if err != nil {
+		return nil, businesses.ErrGetData
+	}
+	return users, nil
 }
 
 func (service serviceUsers) EditUser(id int, user *Domain, personalData *personaldata.Domain) (*Domain, *personaldata.Domain, error) {

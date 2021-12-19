@@ -37,6 +37,14 @@ func FromDomain(domain users.Domain, domainData personaldata.Domain) User {
 	}
 }
 
+func FromDomainArray(domain []users.Domain) []User {
+	var result []User
+	for _, v := range domain {
+		result = append(result, FromDomain(v, personaldata.Domain{}))
+	}
+	return result
+}
+
 type UserLogin struct {
 	Token string `json:"token"`
 }
