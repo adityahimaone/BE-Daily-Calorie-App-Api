@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"Daily-Calorie-App-API/controllers/foods"
 	"Daily-Calorie-App-API/controllers/users"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -9,6 +10,7 @@ import (
 type HandlerList struct {
 	UserController users.Controller
 	JWTMiddleware  middleware.JWTConfig
+	FoodController foods.Controller
 }
 
 func (handler *HandlerList) RouteRegister(e *echo.Echo) {
@@ -21,4 +23,8 @@ func (handler *HandlerList) RouteRegister(e *echo.Echo) {
 	//group.DELETE("/users/:id", handler.UserController.DeleteUser)
 	group.POST("/users/login", handler.UserController.LoginUser)
 	group.GET("/users/", handler.UserController.GetAllUsers)
+
+	//Food Endpoint
+	group.GET("/foods/:id", handler.FoodController.GetFoodByID)
+	group.POST("/foods/add_food", handler.FoodController.CreateFood)
 }

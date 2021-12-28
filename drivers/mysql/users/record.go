@@ -49,9 +49,9 @@ func fromDomain(domain users.Domain) Users {
 }
 
 func toDomainArray(record []Users) []users.Domain {
-	var result []users.Domain
+	var domains []users.Domain
 	for _, v := range record {
-		result = append(result, toDomain(v))
+		domains = append(domains, toDomain(v))
 	}
-	return result
+	return domains
 }
