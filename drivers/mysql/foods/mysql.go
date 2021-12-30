@@ -21,6 +21,9 @@ func (repository repositoryFoods) InsertFood(food *foods.Domain) (*foods.Domain,
 	if err := repository.DB.Create(&recordFood).Error; err != nil {
 		return nil, err
 	}
+	if err := repository.DB.Joins("NutritionInfo").First(&recordFood).Where("id = ?", recordFood.ID).Error; err != nil {
+		return nil, err
+	}
 	result := recordFood.toDomain()
 	return &result, nil
 }
@@ -30,32 +33,35 @@ func (repository repositoryFoods) UpdateFood(id int, food *foods.Domain) (*foods
 	if err := repository.DB.Model(&recordFood).Where("id = ?", id).Updates(&recordFood).Error; err != nil {
 		return nil, err
 	}
-	result := recordFood.toDomain()
-	return &result, nil
-}
-
-func (repository repositoryFoods) DeleteFood(id int) (*foods.Domain, error) {
-	recordFood := Foods{}
-	if err := repository.DB.Delete(&recordFood).Where("id = ?", id).Error; err != nil {
+	if err := repository.DB.Joins("NutritionInfo").Find(&recordFood, "foods.id = ?", id).Error; err != nil {
 		return nil, err
 	}
 	result := recordFood.toDomain()
 	return &result, nil
 }
 
-func (repository repositoryFoods) GetFood(id int) (*foods.Domain, error) {
+func (repository repositoryFoods) DeleteFood(id int) (string, error) {
 	recordFood := Foods{}
-	if err := repository.DB.Joins("NutritionInfo").First(&recordFood).Where("id = ?", id).Error; err != nil {
+	if err := repository.DB.Delete(&recordFood, "foods.id = ?", id).Error; err != nil {
+		return "", err
+	}
+	log.Println(recordFood)
+	result := "Delete Food Successfully"
+	return result, nil
+}
+
+func (repository repositoryFoods) GetFood(foodID int) (*foods.Domain, error) {
+	recordFood := Foods{}
+	if err := repository.DB.Joins("NutritionInfo").First(&recordFood, "foods.id = ?", foodID).Error; err != nil {
 		return nil, err
 	}
-	log.Println(recordFood, "recordFood")
 	result := recordFood.toDomain()
 	return &result, nil
 }
 
 func (repository repositoryFoods) GetFoods() (*[]foods.Domain, error) {
 	var recordFoods []Foods
-	if err := repository.DB.Find(&recordFoods).Error; err != nil {
+	if err := repository.DB.Joins("NutritionInfo").Find(&recordFoods).Error; err != nil {
 		return nil, err
 	}
 	result := toDomainArray(recordFoods)

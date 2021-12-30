@@ -14,4 +14,5 @@ var (
 	ErrInvalidUser   = errors.New("Invalid User")
 	ErrInvalidEmail  = errors.New("Invalid Email")
 	ErrGetData       = errors.New("Get Data Failed")
+	ErrDeleteData    = errors.New("Delete Data Failed")
 )

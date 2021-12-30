@@ -21,8 +21,8 @@ type Domain struct {
 
 type Service interface {
 	AddFood(food *Domain, nutritionInfo *nutritioninfo.Domain) (*Domain, error)
-	EditFood(id int, food *Domain) (*Domain, error)
-	DeleteFood(id int) (*Domain, error)
+	EditFood(id int, food *Domain, nutritionInfo *nutritioninfo.Domain) (*Domain, error)
+	DeleteFood(id int) (string, error)
 	GetFood(id int) (*Domain, error)
 	GetFoods() (*[]Domain, error)
 }
@@ -30,7 +30,7 @@ type Service interface {
 type Repository interface {
 	InsertFood(food *Domain) (*Domain, error)
 	UpdateFood(id int, food *Domain) (*Domain, error)
-	DeleteFood(id int) (*Domain, error)
+	DeleteFood(id int) (string, error)
 	GetFood(id int) (*Domain, error)
 	GetFoods() (*[]Domain, error)
 }

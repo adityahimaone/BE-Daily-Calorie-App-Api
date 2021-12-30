@@ -1,6 +1,7 @@
 package foods
 
 import (
+	"Daily-Calorie-App-API/businesses"
 	"Daily-Calorie-App-API/businesses/nutritioninfo"
 	"log"
 )
@@ -23,13 +24,13 @@ func (service serviceFoods) AddFood(food *Domain, nutrition *nutritioninfo.Domai
 		return nil, err
 	}
 	food.NutritionInfoID = nutritionInfo.ID
-	food.Calories = nutritionInfo.Calories
-	food.Protein = nutritionInfo.Protein
-	food.Carbs = nutritionInfo.Carbs
-	food.Fat = nutritionInfo.Fat
-	food.ServingSize = nutritionInfo.ServingSize
+	//food.Calories = nutritionInfo.Calories
+	//food.Protein = nutritionInfo.Protein
+	//food.Carbs = nutritionInfo.Carbs
+	//food.Fat = nutritionInfo.Fat
+	//food.ServingSize = nutritionInfo.ServingSize
 	log.Println(nutritionInfo.ID, "nutrition info id")
-	log.Println(food.Calories, food.Carbs, food.Protein, food.Fat)
+	//log.Println(food.Calories, food.Carbs, food.Protein, food.Fat)
 	result, err := service.foodRepository.InsertFood(food)
 	if err != nil {
 		return nil, err
@@ -37,18 +38,30 @@ func (service serviceFoods) AddFood(food *Domain, nutrition *nutritioninfo.Domai
 	return result, nil
 }
 
-func (service serviceFoods) EditFood(id int, food *Domain) (*Domain, error) {
+func (service serviceFoods) EditFood(id int, food *Domain, nutritionInfo *nutritioninfo.Domain) (*Domain, error) {
 	result, err := service.foodRepository.UpdateFood(id, food)
 	if err != nil {
-		return nil, err
+		return &Domain{}, err
+	}
+	idNutritionInfo := result.NutritionInfoID
+	_, err = service.nutritionRepository.Update(idNutritionInfo, nutritionInfo)
+	log.Println(result, "result1")
+	//log.Println(result2, "result2")
+	log.Println(idNutritionInfo, "idNutritionInfo")
+	if err != nil {
+		return &Domain{}, err
 	}
 	return result, nil
 }
 
-func (service serviceFoods) DeleteFood(id int) (*Domain, error) {
+func (service serviceFoods) DeleteFood(id int) (string, error) {
+	err := service.nutritionRepository.Delete(id)
+	if err != nil {
+		return "", err
+	}
 	result, err := service.foodRepository.DeleteFood(id)
 	if err != nil {
-		return nil, err
+		return "", businesses.ErrDeleteData
 	}
 	return result, nil
 }

@@ -26,5 +26,8 @@ func (handler *HandlerList) RouteRegister(e *echo.Echo) {
 
 	//Food Endpoint
 	group.GET("/foods/:id", handler.FoodController.GetFoodByID)
+	group.GET("/foods/", handler.FoodController.GetAllFood)
 	group.POST("/foods/add_food", handler.FoodController.CreateFood)
+	group.PUT("/foods/edit_food/:id", handler.FoodController.UpdateFood)
+	group.DELETE("/foods/:id", handler.FoodController.DeleteFood)
 }

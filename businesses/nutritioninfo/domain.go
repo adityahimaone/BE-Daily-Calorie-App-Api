@@ -17,8 +17,8 @@ type Domain struct {
 
 type Repository interface {
 	Create(nutritionInfo *Domain) (*Domain, error)
-	Update(nutritionInfo *Domain) (*Domain, error)
-	Delete(nutritionInfo *Domain) error
+	Update(id int, nutritionInfo *Domain) (*Domain, error)
+	Delete(id int) error
 	GetByID(id int) (*Domain, error)
 	GetAll() ([]Domain, error)
 }

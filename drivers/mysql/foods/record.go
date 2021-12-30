@@ -13,7 +13,6 @@ type Foods struct {
 	ImgURL          string `gorm:"type:varchar(100);not null"`
 	NutritionInfoID uint
 	NutritionInfo   nutritioninfo.NutritionInfo `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Calories        float64
 }
 
 func (record *Foods) toDomain() foods.Domain {

@@ -3,6 +3,7 @@ package foods
 import (
 	"Daily-Calorie-App-API/businesses/foods"
 	"Daily-Calorie-App-API/controllers/foods/request"
+	response2 "Daily-Calorie-App-API/controllers/foods/response"
 	"Daily-Calorie-App-API/helpers"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -25,7 +26,7 @@ func (controller *Controller) GetAllFood(echoContext echo.Context) error {
 		response := helpers.APIResponse("Failed Get All Foods", http.StatusInternalServerError, "Error", err)
 		return echoContext.JSON(http.StatusInternalServerError, response)
 	}
-	response := helpers.APIResponse("Success Get All Food", http.StatusOK, "Success", *resp)
+	response := helpers.APIResponse("Success Get All Food", http.StatusOK, "Success", response2.FromDomainArray(*resp))
 	return echoContext.JSON(http.StatusOK, response)
 }
 
@@ -36,7 +37,7 @@ func (controller *Controller) GetFoodByID(echoContext echo.Context) error {
 		response := helpers.APIResponse("Failed Get Food By ID", http.StatusInternalServerError, "Error", err)
 		return echoContext.JSON(http.StatusInternalServerError, response)
 	}
-	response := helpers.APIResponse("Success Get Food By ID", http.StatusOK, "Success", *resp)
+	response := helpers.APIResponse("Success Get Food By ID", http.StatusOK, "Success", response2.FromDomain(*resp))
 	return echoContext.JSON(http.StatusOK, response)
 }
 
@@ -52,7 +53,7 @@ func (controller *Controller) CreateFood(echoContext echo.Context) error {
 		response := helpers.APIResponse("Failed Create Food", http.StatusInternalServerError, "Error", err)
 		return echoContext.JSON(http.StatusInternalServerError, response)
 	}
-	response := helpers.APIResponse("Success Create Food", http.StatusOK, "Success", *resp)
+	response := helpers.APIResponse("Success Create Food", http.StatusOK, "Success", response2.FromDomain(*resp))
 	return echoContext.JSON(http.StatusOK, response)
 }
 
@@ -62,13 +63,18 @@ func (controller *Controller) UpdateFood(echoContext echo.Context) error {
 		response := helpers.APIResponse("Failed Update Food", http.StatusInternalServerError, "Error", err)
 		return echoContext.JSON(http.StatusInternalServerError, response)
 	}
-	domainFood, _ := request.ToDomain(req)
-	resp, err := controller.serviceFood.EditFood(domainFood.ID, domainFood)
+	foodID, err := strconv.Atoi(echoContext.Param("id"))
+	if err != nil {
+		response := helpers.APIResponse("ID Not Found", http.StatusBadRequest, "Error", err)
+		return echoContext.JSON(http.StatusBadRequest, response)
+	}
+	domainFood, domainNutrition := request.ToDomain(req)
+	resp, err := controller.serviceFood.EditFood(foodID, domainFood, domainNutrition)
 	if err != nil {
 		response := helpers.APIResponse("Failed Update Food", http.StatusInternalServerError, "Error", err)
 		return echoContext.JSON(http.StatusInternalServerError, response)
 	}
-	response := helpers.APIResponse("Success Update Food", http.StatusOK, "Success", *resp)
+	response := helpers.APIResponse("Success Update Food", http.StatusOK, "Success", response2.FromDomain(*resp))
 	return echoContext.JSON(http.StatusOK, response)
 }
 
@@ -79,6 +85,6 @@ func (controller *Controller) DeleteFood(echoContext echo.Context) error {
 		response := helpers.APIResponse("Failed Delete Food", http.StatusInternalServerError, "Error", err)
 		return echoContext.JSON(http.StatusInternalServerError, response)
 	}
-	response := helpers.APIResponse("Success Delete Food", http.StatusOK, "Success", *resp)
+	response := helpers.APIResponse("Success Delete Food", http.StatusOK, "Success", resp)
 	return echoContext.JSON(http.StatusOK, response)
 }
