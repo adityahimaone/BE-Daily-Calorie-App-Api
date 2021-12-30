@@ -1,6 +1,8 @@
 package mysql
 
 import (
+	"Daily-Calorie-App-API/drivers/mysql/foods"
+	"Daily-Calorie-App-API/drivers/mysql/nutritioninfo"
 	"Daily-Calorie-App-API/drivers/mysql/personaldata"
 	"Daily-Calorie-App-API/drivers/mysql/users"
 	"fmt"
@@ -36,4 +38,6 @@ func (config *ConfigDB) IntialDB() *gorm.DB {
 func MigrateDB(db *gorm.DB) {
 	db.AutoMigrate(&users.Users{})
 	db.AutoMigrate(&personaldata.PersonalData{})
+	db.AutoMigrate(&foods.Foods{})
+	db.AutoMigrate(&nutritioninfo.NutritionInfo{})
 }

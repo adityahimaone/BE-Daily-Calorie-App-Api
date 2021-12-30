@@ -4,9 +4,13 @@ import (
 	"Daily-Calorie-App-API/app/middleware/auth"
 	_middlewareLog "Daily-Calorie-App-API/app/middleware/log"
 	"Daily-Calorie-App-API/app/routes"
+	foods2 "Daily-Calorie-App-API/businesses/foods"
 	_serviceUsers "Daily-Calorie-App-API/businesses/users"
+	foods3 "Daily-Calorie-App-API/controllers/foods"
 	_controllerUser "Daily-Calorie-App-API/controllers/users"
 	mysqlDriver "Daily-Calorie-App-API/drivers/mysql"
+	"Daily-Calorie-App-API/drivers/mysql/foods"
+	"Daily-Calorie-App-API/drivers/mysql/nutritioninfo"
 	_repositoryPersonalData "Daily-Calorie-App-API/drivers/mysql/personaldata"
 	_repositoryUsers "Daily-Calorie-App-API/drivers/mysql/users"
 	"github.com/labstack/echo/v4"
@@ -50,9 +54,17 @@ func main() {
 	userService := _serviceUsers.NewService(userRepository, personaldataRepository, &configJWT)
 	userController := _controllerUser.NewController(userService)
 
+	nutritioninfoRepsoitory := nutritioninfo.NewRepositoryMySQL(db)
+
+	foodRepository := foods.NewRepositoryFoodMySQL(db)
+	foodService := foods2.NewService(foodRepository, nutritioninfoRepsoitory)
+	foodController := foods3.NewController(foodService)
+
 	// initial of route
 	routesInit := routes.HandlerList{
+		JWTMiddleware:  configJWT.Init(),
 		UserController: *userController,
+		FoodController: *foodController,
 	}
 	routesInit.RouteRegister(e)
 	_middlewareLog.LogMiddleware(e)

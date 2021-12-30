@@ -63,4 +63,3 @@ func (controller *Controller) UpdateUser(echoContext echo.Context) error {
 	response := helpers.APIResponse("Success Update User", http.StatusOK, "Success", _response.FromDomain(*resp1, *resp2))
 	return echoContext.JSON(http.StatusOK, response)
 }
-

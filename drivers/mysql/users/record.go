@@ -47,3 +47,11 @@ func fromDomain(domain users.Domain) Users {
 		PersonalDataID: uint(domain.PersonalDataID),
 	}
 }
+
+func toDomainArray(record []Users) []users.Domain {
+	var domains []users.Domain
+	for _, v := range record {
+		domains = append(domains, toDomain(v))
+	}
+	return domains
+}

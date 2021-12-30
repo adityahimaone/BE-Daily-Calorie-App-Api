@@ -23,7 +23,7 @@ type Service interface {
 	Login(email string, password string) (string, error)
 	FindByID(id int) (*Domain, *personaldata.Domain, error)
 	EmailAvailable(email string) (bool, error)
-	GetAllUsers() ([]*Domain, error)
+	GetAllUsers() (*[]Domain, error)
 	EditUser(id int, user *Domain, personalData *personaldata.Domain) (*Domain, *personaldata.Domain, error)
 	DeleteUser(id int, user *Domain) (*Domain, error)
 }
@@ -33,6 +33,6 @@ type Repository interface {
 	Update(id int, user *Domain) (*Domain, error)
 	FindByID(id int) (*Domain, error)
 	FindByEmail(email string) (*Domain, error)
-	GetAllUsers() ([]*Domain, error)
+	GetAllUsers() (*[]Domain, error)
 	Delete(id int, user *Domain) (*Domain, error)
 }
