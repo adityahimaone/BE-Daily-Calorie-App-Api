@@ -3,16 +3,19 @@ package main
 import (
 	"Daily-Calorie-App-API/app/middleware/auth"
 	_middlewareLog "Daily-Calorie-App-API/app/middleware/log"
-	"Daily-Calorie-App-API/app/routes"
-	foods2 "Daily-Calorie-App-API/businesses/foods"
-	_serviceUsers "Daily-Calorie-App-API/businesses/users"
-	foods3 "Daily-Calorie-App-API/controllers/foods"
+	_routes "Daily-Calorie-App-API/app/routes"
+	_serviceAdmins "Daily-Calorie-App-API/business/admins"
+	_serviceFood "Daily-Calorie-App-API/business/foods"
+	_serviceHistories "Daily-Calorie-App-API/business/histories"
+	_serviceHistoriesDetail "Daily-Calorie-App-API/business/historiesdetail"
+	_serviceUsers "Daily-Calorie-App-API/business/users"
+	_controllerAdmin "Daily-Calorie-App-API/controllers/admins"
+	_controllerFood "Daily-Calorie-App-API/controllers/foods"
+	_coontrollerHistories "Daily-Calorie-App-API/controllers/histories"
 	_controllerUser "Daily-Calorie-App-API/controllers/users"
-	mysqlDriver "Daily-Calorie-App-API/drivers/mysql"
-	"Daily-Calorie-App-API/drivers/mysql/foods"
-	"Daily-Calorie-App-API/drivers/mysql/nutritioninfo"
-	_repositoryPersonalData "Daily-Calorie-App-API/drivers/mysql/personaldata"
-	_repositoryUsers "Daily-Calorie-App-API/drivers/mysql/users"
+	_driverFactory "Daily-Calorie-App-API/drivers"
+	_dbDriver "Daily-Calorie-App-API/drivers/mysql"
+	_dbPostgres "Daily-Calorie-App-API/drivers/postgres"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 	"log"
@@ -29,12 +32,20 @@ func init() {
 	}
 }
 func main() {
-	configDB := mysqlDriver.ConfigDB{
+	configDB := _dbDriver.ConfigDB{
 		DBUsername: viper.GetString(`database.user`),
 		DBPassword: viper.GetString(`database.pass`),
 		DBHost:     viper.GetString(`database.host`),
 		DBPort:     viper.GetString(`database.port`),
 		DBDatabase: viper.GetString(`database.name`),
+	}
+
+	configPostgres := _dbPostgres.ConfigPostgresSQL{
+		DBHost:     viper.GetString(`postgres.host`),
+		DBUsername: viper.GetString(`postgres.user`),
+		DBPassword: viper.GetString(`postgres.pass`),
+		DBDatabase: viper.GetString(`postgres.name`),
+		DBPort:     viper.GetString(`postgres.port`),
 	}
 
 	configJWT := auth.ConfigJWT{
@@ -43,29 +54,42 @@ func main() {
 	}
 
 	db := configDB.IntialDB()
-	mysqlDriver.MigrateDB(db)
-
+	dbPostgres := configPostgres.IntialPostgresSQL()
+	_dbDriver.MigrateDB(db)
+	_dbPostgres.MigrateDB(dbPostgres)
 	e := echo.New()
 
 	//factory of domain
-	personaldataRepository := _repositoryPersonalData.NewRepositoryMySQL(db)
+	personaldataRepository := _driverFactory.NewPersonalDataRepository(dbPostgres)
 
-	userRepository := _repositoryUsers.NewRepositoryMySQL(db)
-	userService := _serviceUsers.NewService(userRepository, personaldataRepository, &configJWT)
+	userRepository := _driverFactory.NewUserRepository(dbPostgres)
+	userService := _serviceUsers.NewUserService(userRepository, personaldataRepository, &configJWT)
 	userController := _controllerUser.NewController(userService)
 
-	nutritioninfoRepsoitory := nutritioninfo.NewRepositoryMySQL(db)
+	foodRepository := _driverFactory.NewFoodRepository(dbPostgres)
+	foodService := _serviceFood.NewFoodService(foodRepository, &configJWT)
+	foodController := _controllerFood.NewController(foodService)
 
-	foodRepository := foods.NewRepositoryFoodMySQL(db)
-	foodService := foods2.NewService(foodRepository, nutritioninfoRepsoitory)
-	foodController := foods3.NewController(foodService)
+	adminRepository := _driverFactory.NewAdminRepository(dbPostgres)
+	adminService := _serviceAdmins.NewServiceAdmin(adminRepository, &configJWT)
+	adminController := _controllerAdmin.NewController(adminService)
+
+	historiesdetailRepository := _driverFactory.NewHistoriesDetailRepository(dbPostgres)
+	historiesdetailService := _serviceHistoriesDetail.NewHistoriesDetailService(historiesdetailRepository, foodService)
+
+	historiesRepository := _driverFactory.NewHistoriesRepository(dbPostgres)
+	historiesService := _serviceHistories.NewHistoriesService(historiesRepository, userService, foodService, historiesdetailService, &configJWT)
+	historiesController := _coontrollerHistories.NewController(historiesService)
 
 	// initial of route
-	routesInit := routes.HandlerList{
-		JWTMiddleware:  configJWT.Init(),
-		UserController: *userController,
-		FoodController: *foodController,
+	routesInit := _routes.HandlerList{
+		JWTMiddleware:       configJWT.Init(),
+		UserController:      *userController,
+		FoodController:      *foodController,
+		AdminController:     *adminController,
+		HistoriesController: *historiesController,
 	}
+
 	routesInit.RouteRegister(e)
 	_middlewareLog.LogMiddleware(e)
 	log.Fatal(e.Start(viper.GetString("server.address")))

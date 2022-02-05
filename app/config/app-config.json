@@ -9,6 +9,13 @@
     "pass": "",
     "name": "dailycalorieapi_test"
   },
+  "postgres": {
+    "host": "localhost",
+    "port": "5432",
+    "user": "postgres",
+    "pass": "1167",
+    "name": "daily_calorie"
+  },
   "jwt": {
     "secret": "tokens4nga#raha$!asek4lL",
     "expired": 2
