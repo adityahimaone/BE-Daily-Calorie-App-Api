@@ -54,6 +54,9 @@ func (service serviceFoods) GetFoodByName(name string) (*Domain, error) {
 	if err != nil {
 		return &Domain{}, err
 	}
+	//if result.ID == 0 {
+	//	return &Domain{}, business.ErrNotFound
+	//}
 	return result, nil
 }
 

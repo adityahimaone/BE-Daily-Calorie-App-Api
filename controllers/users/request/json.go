@@ -1,9 +1,9 @@
 package request
 
 import (
-	"Daily-Calorie-App-API/business/personaldata"
+	"Daily-Calorie-App-API/business/personal_data"
 	"Daily-Calorie-App-API/business/users"
-	"Daily-Calorie-App-API/controllers/personaldata/request"
+	"Daily-Calorie-App-API/controllers/personal_data/request"
 )
 
 type User struct {
@@ -21,7 +21,7 @@ type UserLogin struct {
 	Password string `json:"password"`
 }
 
-func ToDomain(request *User) (*users.Domain, *personaldata.Domain) {
+func ToDomain(request *User) (*users.Domain, *personal_data.Domain) {
 	return &users.Domain{
 			Name:           request.Name,
 			Email:          request.Email,
@@ -29,7 +29,7 @@ func ToDomain(request *User) (*users.Domain, *personaldata.Domain) {
 			AvatarUrl:      request.AvatarUrl,
 			Gender:         request.Gender,
 			PersonalDataID: request.PersonalDataID,
-		}, &personaldata.Domain{
+		}, &personal_data.Domain{
 			Calories: request.PersonalData.Calories,
 			Weight:   request.PersonalData.Weight,
 			Height:   request.PersonalData.Height,

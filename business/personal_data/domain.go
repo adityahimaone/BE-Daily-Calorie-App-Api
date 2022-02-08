@@ -1,4 +1,4 @@
-package personaldata
+package personal_data
 
 type Domain struct {
 	ID       int

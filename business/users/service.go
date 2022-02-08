@@ -3,17 +3,17 @@ package users
 import (
 	"Daily-Calorie-App-API/app/middleware/auth"
 	"Daily-Calorie-App-API/business"
-	"Daily-Calorie-App-API/business/personaldata"
+	"Daily-Calorie-App-API/business/personal_data"
 	"Daily-Calorie-App-API/helpers"
 )
 
 type serviceUsers struct {
 	userRepository         Repository
-	personaldataRepository personaldata.Repository
+	personaldataRepository personal_data.Repository
 	jwtAuth                *auth.ConfigJWT
 }
 
-func NewUserService(repositoryUser Repository, repositoryPersonalData personaldata.Repository, jwtAuth *auth.ConfigJWT) Service {
+func NewUserService(repositoryUser Repository, repositoryPersonalData personal_data.Repository, jwtAuth *auth.ConfigJWT) Service {
 	return &serviceUsers{
 		userRepository:         repositoryUser,
 		personaldataRepository: repositoryPersonalData,
@@ -21,7 +21,7 @@ func NewUserService(repositoryUser Repository, repositoryPersonalData personalda
 	}
 }
 
-func (service *serviceUsers) RegisterUser(userData *Domain, personalData *personaldata.Domain) (*Domain, error) {
+func (service *serviceUsers) RegisterUser(userData *Domain, personalData *personal_data.Domain) (*Domain, error) {
 	newPersonalData, err := service.personaldataRepository.Insert(personalData)
 	if err != nil {
 		return &Domain{}, business.ErrInsertData
@@ -75,7 +75,7 @@ func (service *serviceUsers) GetAllUser() (*[]Domain, error) {
 	return users, nil
 }
 
-func (service serviceUsers) EditUser(id int, user *Domain, personalData *personaldata.Domain) (*Domain, error) {
+func (service serviceUsers) EditUser(id int, user *Domain, personalData *personal_data.Domain) (*Domain, error) {
 	passwordHash, _ := helpers.PasswordHash(user.Password)
 	user.Password = passwordHash
 	userResult, err := service.userRepository.Update(id, user)

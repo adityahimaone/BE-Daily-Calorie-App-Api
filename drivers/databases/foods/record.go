@@ -7,38 +7,41 @@ import (
 
 type Foods struct {
 	gorm.Model
-	ID       uint   `gorm:"primary_key"`
-	Title    string `gorm:"type:varchar(100);not null"`
-	ImgURL   string `gorm:"type:varchar(100);not null"`
-	Calories float64
-	Fat      float64
-	Carbs    float64
-	Protein  float64
+	ID          uint   `gorm:"primary_key"`
+	Title       string `gorm:"type:varchar(100);not null;unique"`
+	ImgURL      string `gorm:"type:varchar(100);not null"`
+	Calories    float64
+	Fat         float64
+	Carbs       float64
+	Protein     float64
+	ServingSize float64
 }
 
 func (record *Foods) toDomain() foods.Domain {
 	return foods.Domain{
-		ID:        int(record.ID),
-		Title:     record.Title,
-		ImgURL:    record.ImgURL,
-		Calories:  record.Calories,
-		Fat:       record.Fat,
-		Carbs:     record.Carbs,
-		Protein:   record.Protein,
-		CreatedAt: record.CreatedAt,
-		UpdatedAt: record.UpdatedAt,
+		ID:          int(record.ID),
+		Title:       record.Title,
+		ImgURL:      record.ImgURL,
+		Calories:    record.Calories,
+		Fat:         record.Fat,
+		Carbs:       record.Carbs,
+		Protein:     record.Protein,
+		ServingSize: record.ServingSize,
+		CreatedAt:   record.CreatedAt,
+		UpdatedAt:   record.UpdatedAt,
 	}
 }
 
 func fromDomain(domain foods.Domain) Foods {
 	return Foods{
-		ID:       uint(domain.ID),
-		Title:    domain.Title,
-		ImgURL:   domain.ImgURL,
-		Calories: domain.Calories,
-		Fat:      domain.Fat,
-		Carbs:    domain.Carbs,
-		Protein:  domain.Protein,
+		ID:          uint(domain.ID),
+		Title:       domain.Title,
+		ImgURL:      domain.ImgURL,
+		Calories:    domain.Calories,
+		Fat:         domain.Fat,
+		Carbs:       domain.Carbs,
+		Protein:     domain.Protein,
+		ServingSize: domain.ServingSize,
 	}
 }
 

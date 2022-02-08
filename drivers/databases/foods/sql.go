@@ -36,7 +36,7 @@ func (repository repositoryFoods) Update(id int, food *foods.Domain) (*foods.Dom
 		return &foods.Domain{}, err
 	}
 
-	if err := repository.DB.Joins("NutritionInfo").Find(&recordFood, "foods.id = ?", id).Error; err != nil {
+	if err := repository.DB.Find(&recordFood, "foods.id = ?", id).Error; err != nil {
 		return &foods.Domain{}, err
 	}
 
@@ -70,8 +70,8 @@ func (repository repositoryFoods) GetFoodByID(foodID int) (*foods.Domain, error)
 
 func (repository repositoryFoods) GetFoodByName(name string) (*foods.Domain, error) {
 	recordFood := Foods{}
-	if err := repository.DB.Joins("NutritionInfo").Find(&recordFood, "foods.title LIKE ?", "%"+name+"%").Error; err != nil {
-		return &foods.Domain{}, err
+	if err := repository.DB.Find(&recordFood, "title LIKE ?", "%"+name+"%").Error; err != nil {
+		return nil, err
 	}
 	result := recordFood.toDomain()
 	return &result, nil
@@ -79,7 +79,7 @@ func (repository repositoryFoods) GetFoodByName(name string) (*foods.Domain, err
 
 func (repository repositoryFoods) GetAllFood() (*[]foods.Domain, error) {
 	var recordFoods []Foods
-	if err := repository.DB.Joins("NutritionInfo").Find(&recordFoods).Error; err != nil {
+	if err := repository.DB.Find(&recordFoods).Error; err != nil {
 		return &[]foods.Domain{}, err
 	}
 	result := toDomainArray(recordFoods)

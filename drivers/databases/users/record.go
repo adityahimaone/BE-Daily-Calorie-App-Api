@@ -2,7 +2,7 @@ package users
 
 import (
 	"Daily-Calorie-App-API/business/users"
-	"Daily-Calorie-App-API/drivers/databases/personaldata"
+	"Daily-Calorie-App-API/drivers/databases/personal_data"
 	"gorm.io/gorm"
 )
 
@@ -10,12 +10,12 @@ type Users struct {
 	gorm.Model
 	ID             uint   `gorm:"primary_key"`
 	Name           string `gorm:"type:varchar(255);not null"`
-	Email          string `gorm:"type:varchar(255);not null"`
+	Email          string `gorm:"type:varchar(255);unique;not null"`
 	Password       string `gorm:"type:varchar(100);not null"`
 	AvatarUrl      string `gorm:"type:varchar(255);not null"`
 	Gender         string `gorm:"type:varchar(100);not null"`
 	PersonalDataID uint
-	PersonalData   personaldata.PersonalData `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	PersonalData   personal_data.PersonalData `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (record *Users) toDomain() users.Domain {

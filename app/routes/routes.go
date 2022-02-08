@@ -6,7 +6,10 @@ import (
 	controller "Daily-Calorie-App-API/controllers"
 	"Daily-Calorie-App-API/controllers/admins"
 	"Daily-Calorie-App-API/controllers/foods"
+	"Daily-Calorie-App-API/controllers/foodsAPI"
 	"Daily-Calorie-App-API/controllers/histories"
+	"Daily-Calorie-App-API/controllers/histories_detail"
+	"Daily-Calorie-App-API/controllers/meal_plans"
 	"Daily-Calorie-App-API/controllers/users"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -14,11 +17,14 @@ import (
 )
 
 type HandlerList struct {
-	UserController      users.Controller
-	JWTMiddleware       middleware.JWTConfig
-	FoodController      foods.Controller
-	AdminController     admins.Controller
-	HistoriesController histories.Controller
+	UserController            users.Controller
+	JWTMiddleware             middleware.JWTConfig
+	FoodController            foods.Controller
+	AdminController           admins.Controller
+	HistoriesController       histories.Controller
+	HistoriesDetailController histories_detail.Controller
+	FoodAPIController         foodsAPI.Controller
+	MealPlansController       meal_plans.Controller
 }
 
 func (controller *HandlerList) RouteRegister(e *echo.Echo) {
@@ -46,6 +52,21 @@ func (controller *HandlerList) RouteRegister(e *echo.Echo) {
 
 	//History Endpoint
 	group.POST("/histories/add", controller.HistoriesController.CreateHistories, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+	group.POST("/histories/automatic", controller.HistoriesController.CreateHistoriesFromAPI, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+	group.GET("/histories/list", controller.HistoriesController.GetAllHistoriesByUserID, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+	group.GET("/histories/:id", controller.HistoriesController.GetHistoriesByID, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+
+	//Histories Detail Endpoint
+	group.GET("/histories_detail/all/:id", controller.HistoriesDetailController.GetAllHistoryDetailByHistoriesID, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+	group.DELETE("/histories_detail/:id", controller.HistoriesDetailController.DeleteDetailHistory, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+
+	//Foods API Endpoint
+	group.GET("/foods/api/", controller.FoodAPIController.GetFoodByName, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
+	group.GET("/meal-plan/api/", controller.FoodAPIController.GetMealPlan, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
+
+	//Meal Plans Endpoint
+	group.POST("/meal-plan", controller.MealPlansController.CreateMealPlans, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+
 }
 
 func RoleValidationUser() echo.MiddlewareFunc {

@@ -12,7 +12,7 @@ type Domain struct {
 	Fat         float64
 	Protein     float64
 	Carbs       float64
-	ServingSize string
+	ServingSize float64
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

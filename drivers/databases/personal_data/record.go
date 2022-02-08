@@ -1,7 +1,7 @@
-package personaldata
+package personal_data
 
 import (
-	"Daily-Calorie-App-API/business/personaldata"
+	"Daily-Calorie-App-API/business/personal_data"
 	"gorm.io/gorm"
 )
 
@@ -13,8 +13,8 @@ type PersonalData struct {
 	Height   int     `gorm:"type:int"`
 }
 
-func toDomain(record PersonalData) personaldata.Domain {
-	return personaldata.Domain{
+func toDomain(record PersonalData) personal_data.Domain {
+	return personal_data.Domain{
 		ID:       int(record.ID),
 		Calories: record.Calories,
 		Weight:   record.Weight,
@@ -22,7 +22,7 @@ func toDomain(record PersonalData) personaldata.Domain {
 	}
 }
 
-func fromDomain(domain personaldata.Domain) PersonalData {
+func fromDomain(domain personal_data.Domain) PersonalData {
 	return PersonalData{
 		ID:       uint(domain.ID),
 		Calories: domain.Calories,
