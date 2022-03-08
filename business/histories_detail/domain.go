@@ -19,11 +19,13 @@ type Domain struct {
 type Service interface {
 	Insert(historiesDetail *Domain) (*Domain, error)
 	GetAllHistoriesDetailByHistoriesID(historiesID int) (*[]Domain, error)
-	Delete(id int) (string, error)
+	Delete(id int) (*Domain, error)
+	SumCalories(historiesID int) (float64, error)
 }
 
 type Repository interface {
 	Insert(historiesDetail *Domain) (*Domain, error)
 	GetAllHistoriesDetailByHistoriesID(historiesID int) (*[]Domain, error)
-	Delete(id int) error
+	Delete(id int) (*Domain, error)
+	SumCalories(historiesID int) (float64, error)
 }

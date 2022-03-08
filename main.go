@@ -4,6 +4,8 @@ import (
 	"Daily-Calorie-App-API/app/middleware/auth"
 	_middlewareLog "Daily-Calorie-App-API/app/middleware/log"
 	_routes "Daily-Calorie-App-API/app/routes"
+	"github.com/labstack/echo/v4/middleware"
+	"net/http"
 
 	_serviceAdmins "Daily-Calorie-App-API/business/admins"
 	_serviceFood "Daily-Calorie-App-API/business/foods"
@@ -111,5 +113,11 @@ func main() {
 
 	routesInit.RouteRegister(e)
 	_middlewareLog.LogMiddleware(e)
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		//Skipper:      DefaultSkipper,
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+	}))
 	log.Fatal(e.Start(viper.GetString("server.address")))
 }

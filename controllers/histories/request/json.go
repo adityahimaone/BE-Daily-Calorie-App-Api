@@ -11,6 +11,11 @@ type Histories struct {
 	FoodID int `json:"food_id"`
 }
 
+type HistoriesWater struct {
+	UserID int `json:"user_id"`
+	Water  int `json:"water"`
+}
+
 type HistoriesFood struct {
 	UserID      int     `json:"user_id"`
 	FoodID      int     `json:"food_id"`
@@ -28,6 +33,13 @@ func (request *Histories) ToDomain() *histories.Domain {
 		UserID: request.UserID,
 		Water:  request.Water,
 		FoodID: request.FoodID,
+	}
+}
+
+func (request *HistoriesWater) ToDomain() *histories.Domain {
+	return &histories.Domain{
+		UserID: request.UserID,
+		Water:  request.Water,
 	}
 }
 

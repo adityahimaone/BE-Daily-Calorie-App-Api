@@ -1,6 +1,9 @@
 package histories_detail
 
-import "Daily-Calorie-App-API/business/foods"
+import (
+	"Daily-Calorie-App-API/business"
+	"Daily-Calorie-App-API/business/foods"
+)
 
 type serviceHistoriesDetail struct {
 	historiesdetailRepository Repository
@@ -22,18 +25,26 @@ func (service serviceHistoriesDetail) Insert(historiesDetail *Domain) (*Domain, 
 	return result, nil
 }
 
-func (service serviceHistoriesDetail) Delete(id int) (string, error) {
-	err := service.historiesdetailRepository.Delete(id)
+func (service serviceHistoriesDetail) Delete(id int) (*Domain, error) {
+	result, err := service.historiesdetailRepository.Delete(id)
 	if err != nil {
-		return "Error Delete", err
+		return &Domain{}, business.ErrNotFound
 	}
-	return "Success Delete", nil
+	return result, nil
 }
 
 func (service serviceHistoriesDetail) GetAllHistoriesDetailByHistoriesID(historiesID int) (*[]Domain, error) {
 	result, err := service.historiesdetailRepository.GetAllHistoriesDetailByHistoriesID(historiesID)
 	if err != nil {
 		return &[]Domain{}, err
+	}
+	return result, nil
+}
+
+func (service serviceHistoriesDetail) SumCalories(historiesID int) (float64, error) {
+	result, err := service.historiesdetailRepository.SumCalories(historiesID)
+	if err != nil {
+		return 0, err
 	}
 	return result, nil
 }

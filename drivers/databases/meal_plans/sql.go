@@ -17,7 +17,16 @@ func NewRepositoryMealPlans(db *gorm.DB) meal_plans.Repository {
 
 func (repository repositoryMealPlans) Insert(domain *meal_plans.Domain) (*meal_plans.Domain, error) {
 	recordMealPlans := fromDomain(*domain)
-	if err := repository.DB.Create(&recordMealPlans).Error; err != nil {
+	if err := repository.DB.Save(&recordMealPlans).Error; err != nil {
+		return nil, err
+	}
+	result := recordMealPlans.toDomain()
+	return &result, nil
+}
+
+func (repository repositoryMealPlans) GetLastMealPlans(userID int) (*meal_plans.Domain, error) {
+	recordMealPlans := MealPlans{}
+	if err := repository.DB.Where("user_id = ?", userID).Last(&recordMealPlans).Error; err != nil {
 		return nil, err
 	}
 	result := recordMealPlans.toDomain()

@@ -33,6 +33,11 @@ type Service interface {
 	CreateHistories(histories *Domain) (*Domain, error)
 	GetHistoriesByID(userID int) (*Domain, error)
 	GetAllHistoryByUserID(userID int) (*[]Domain, error)
+	GetLastHistoryByUserID(userID int) (*Domain, error)
+	GetHistoriesByUserIDandDate(userID int) (*Domain, error)
+	CreateWater(histories *Domain) (*Domain, error)
+	UpdateTotalCalories(historiesID int, totalCalories float64) (*Domain, error)
+	DeleteHistoriesDetail(historiesDetailID int) (string, error)
 }
 
 type Repository interface {
@@ -41,4 +46,9 @@ type Repository interface {
 	GetHistoriesByID(id int) (*Domain, error)
 	GetHistoriesByUserIDandDate(userID int, date string) (*Domain, error)
 	GetAllHistoryByUserID(userID int) (*[]Domain, error)
+	GetLastHistoryByUserID(userID int) (*Domain, error)
+	UpdateWater(id int, water *Domain) (*Domain, error)
+	UpdateTotalCalories(id int, totalCalories float64) (*Domain, error)
+	UpdateTotalHistoriesDetail(id int) (*Domain, error)
+	UpdateTotalFood(id int, totalFood int) (*Domain, error)
 }

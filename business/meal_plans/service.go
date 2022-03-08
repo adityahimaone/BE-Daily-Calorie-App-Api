@@ -19,15 +19,16 @@ func NewMealPlansService(mealplansRepository Repository, foodsAPIService foodsAP
 	}
 }
 
-func (service serviceMealPlans) CreateMealPlans(domain *Domain, domainFoodAPI *foodsAPI.Domain) (*Domain, error) {
-	mealplans, _ := service.foodsAPIService.GetMealPlan(domainFoodAPI)
-	domain.Lunch = mealplans.Lunch
-	domain.Dinner = mealplans.Dinner
-	domain.Breakfast = mealplans.Breakfast
-	domain.MealTime = mealplans.MealTime
-	domain.PlanType = mealplans.PlanType
-	domain.DietaryPreferences = mealplans.DietaryPreferences
+func (service serviceMealPlans) CreateMealPlans(domain *Domain) (*Domain, error) {
 	result, err := service.mealplansRepository.Insert(domain)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (service serviceMealPlans) GetLastMealPlans(userID int) (*Domain, error) {
+	result, err := service.mealplansRepository.GetLastMealPlans(userID)
 	if err != nil {
 		return nil, err
 	}

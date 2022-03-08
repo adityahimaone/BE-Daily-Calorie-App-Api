@@ -5,6 +5,7 @@ import (
 	"Daily-Calorie-App-API/business/foods"
 	"Daily-Calorie-App-API/business/histories_detail"
 	"Daily-Calorie-App-API/business/users"
+	"log"
 	"time"
 )
 
@@ -47,6 +48,30 @@ func (service serviceHistories) CreateHistoriesFromAPI(histories *Domain, food *
 	result, err := service.CreateHistories(histories)
 	if err != nil {
 		return &Domain{}, err
+	}
+	return result, nil
+}
+func (service serviceHistories) CreateWater(histories *Domain) (*Domain, error) {
+	user, err := service.usersService.GetUserByID(histories.UserID)
+	if err != nil {
+		return &Domain{}, err
+	}
+	result := histories
+	histories.UserID = user.ID
+	dateTime := time.Now().Format("02-01-2006")
+	histories.Date = dateTime
+	exist, err := service.historiesRepository.GetHistoriesByUserIDandDate(histories.UserID, histories.Date)
+	if exist.ID != 0 {
+		histories.ID = exist.ID
+		result, err = service.historiesRepository.UpdateWater(exist.ID, histories)
+		if err != nil {
+			return &Domain{}, err
+		}
+	} else {
+		result, err = service.historiesRepository.Insert(histories)
+		if err != nil {
+			return &Domain{}, err
+		}
 	}
 	return result, nil
 }
@@ -98,6 +123,14 @@ func (service serviceHistories) CreateHistories(histories *Domain) (*Domain, err
 	return result, nil
 }
 
+func (service serviceHistories) GetLastHistoryByUserID(userID int) (*Domain, error) {
+	result, err := service.historiesRepository.GetLastHistoryByUserID(userID)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return result, nil
+}
+
 func (service serviceHistories) GetAllHistoryByUserID(userID int) (*[]Domain, error) {
 	result, err := service.historiesRepository.GetAllHistoryByUserID(userID)
 	if err != nil {
@@ -106,8 +139,54 @@ func (service serviceHistories) GetAllHistoryByUserID(userID int) (*[]Domain, er
 	return result, nil
 }
 
-func (service serviceHistories) GetHistoriesByID(userID int) (*Domain, error) {
-	result, err := service.historiesRepository.GetHistoriesByID(userID)
+func (service serviceHistories) GetHistoriesByUserIDandDate(userID int) (*Domain, error) {
+	dateTime := time.Now().Format("02-01-2006")
+	result, err := service.historiesRepository.GetHistoriesByUserIDandDate(userID, dateTime)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return result, nil
+}
+
+func (service serviceHistories) GetHistoriesByID(id int) (*Domain, error) {
+	result, err := service.historiesRepository.GetHistoriesByID(id)
+	if err != nil {
+		return &Domain{}, err
+	}
+	// count histories_details
+	CountHistoriesDetail := len(result.HistoriesDetail)
+	log.Println(CountHistoriesDetail)
+	return result, nil
+}
+
+func (service serviceHistories) DeleteHistoriesDetail(historiesDetailID int) (string, error) {
+	resultDelete, err := service.historiesDetailService.Delete(historiesDetailID)
+	if err != nil {
+		return "Error Delete", err
+	}
+	resultSumCalorie, err := service.historiesDetailService.SumCalories(resultDelete.HistoriesID)
+	if err != nil {
+		return "Error Sum", err
+	}
+	_, err = service.historiesRepository.UpdateTotalCalories(resultDelete.HistoriesID, resultSumCalorie)
+	if err != nil {
+		return "Error Update", err
+	}
+	resultGetHistory, err := service.historiesRepository.GetHistoriesByID(resultDelete.HistoriesID)
+	if err != nil {
+		return "Error Get History", err
+	}
+	// count histories_details
+	CountHistoriesDetail := len(resultGetHistory.HistoriesDetail)
+	_, err = service.historiesRepository.UpdateTotalFood(resultDelete.HistoriesID, CountHistoriesDetail)
+	if err != nil {
+		return "Error Update Total Food", err
+	}
+	return "Success", nil
+}
+
+func (service serviceHistories) UpdateTotalCalories(historiesID int, totalCalories float64) (*Domain, error) {
+	result, err := service.historiesRepository.UpdateTotalCalories(historiesID, totalCalories)
 	if err != nil {
 		return &Domain{}, err
 	}

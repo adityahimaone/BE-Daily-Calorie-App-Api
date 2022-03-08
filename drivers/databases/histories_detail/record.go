@@ -9,12 +9,12 @@ import (
 
 type HistoriesDetail struct {
 	gorm.Model
-	ID          uint        `gorm:"primary_key"`
-	HistoriesID uint        `gorm:"not null"`
-	FoodID      uint        `gorm:"not null"`
-	Food        foods.Foods `gorm:"constraint:OnUpdate:NO ACTION,OnDelete:NO ACTION;"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          uint        `gorm:"primary_key" json:"ID,omitempty"`
+	HistoriesID uint        `gorm:"not null" json:"historiesID,omitempty"`
+	FoodID      uint        `gorm:"not null" json:"foodID,omitempty"`
+	Food        foods.Foods `gorm:"constraint:OnUpdate:NO ACTION,OnDelete:NO ACTION;" json:"food"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	UpdatedAt   time.Time   `json:"updatedAt"`
 }
 
 func fromDomain(domain histories_detail.Domain) HistoriesDetail {

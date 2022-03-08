@@ -18,18 +18,22 @@ func NewRepositoryHistoriesDetail(db *gorm.DB) histories_detail.Repository {
 func (repository repositoryHistoriesDetail) Insert(historiesDetail *histories_detail.Domain) (*histories_detail.Domain, error) {
 	recordHistoriesDetail := fromDomain(*historiesDetail)
 	if err := repository.DB.Save(&recordHistoriesDetail).Error; err != nil {
-		return nil, err
+		return &histories_detail.Domain{}, err
 	}
 	result := recordHistoriesDetail.toDomain()
 	return &result, nil
 }
 
-func (repository repositoryHistoriesDetail) Delete(id int) error {
+func (repository repositoryHistoriesDetail) Delete(id int) (*histories_detail.Domain, error) {
 	recordHistoriesDetail := HistoriesDetail{}
-	if err := repository.DB.Delete(&recordHistoriesDetail, id).Error; err != nil {
-		return err
+	if err := repository.DB.Where("id = ?", id).First(&recordHistoriesDetail).Error; err != nil {
+		return &histories_detail.Domain{}, err
 	}
-	return nil
+	if err := repository.DB.Delete(&recordHistoriesDetail, id).Error; err != nil {
+		return &histories_detail.Domain{}, err
+	}
+	result := recordHistoriesDetail.toDomain()
+	return &result, nil
 }
 
 func (repository repositoryHistoriesDetail) GetAllHistoriesDetailByHistoriesID(historiesID int) (*[]histories_detail.Domain, error) {
@@ -39,4 +43,16 @@ func (repository repositoryHistoriesDetail) GetAllHistoriesDetailByHistoriesID(h
 	}
 	result := toDomainArray(recordHistoriesDetail)
 	return &result, nil
+}
+
+func (repository repositoryHistoriesDetail) SumCalories(historiesID int) (float64, error) {
+	var recordHistoriesDetail []HistoriesDetail
+	var sum float64
+	if err := repository.DB.Joins("Food").Where("histories_id = ?", historiesID).Find(&recordHistoriesDetail).Error; err != nil {
+		return 0, err
+	}
+	for _, value := range recordHistoriesDetail {
+		sum += value.Food.Calories
+	}
+	return sum, nil
 }

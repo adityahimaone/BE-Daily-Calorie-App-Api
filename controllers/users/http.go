@@ -6,6 +6,7 @@ import (
 	_request "Daily-Calorie-App-API/controllers/users/request"
 	_response "Daily-Calorie-App-API/controllers/users/response"
 	"github.com/labstack/echo/v4"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -48,7 +49,7 @@ func (controller *Controller) UpdateUser(echoContext echo.Context) error {
 		return controllers.NewErrorResponse(echoContext, http.StatusBadRequest, err)
 	}
 	domainUser, domainPersonalData := _request.ToDomain(&req)
-	userID := 3
+	userID := 1
 	resp, err := controller.serviceUser.EditUser(userID, domainUser, domainPersonalData)
 	if err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusBadRequest, err)
@@ -78,7 +79,9 @@ func (controller *Controller) LoginUser(echoContext echo.Context) error {
 	if err := echoContext.Bind(&req); err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusBadRequest, err)
 	}
+	log.Println(req)
 	resp, err := controller.serviceUser.Login(req.Email, req.Password)
+	log.Println(resp)
 	if err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusInternalServerError, err)
 	}
