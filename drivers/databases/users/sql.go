@@ -36,7 +36,7 @@ func (repository repositoryUsers) Update(id int, user *users.Domain) (*users.Dom
 		return &users.Domain{}, err
 	}
 
-	if err := repository.DB.Joins("PersonalData").Find(&recordUser).Where("users.id = ?", id).Error; err != nil {
+	if err := repository.DB.Joins("PersonalData").First(&recordUser, "users.id = ?", id).Error; err != nil {
 		return &users.Domain{}, err
 	}
 
@@ -46,7 +46,7 @@ func (repository repositoryUsers) Update(id int, user *users.Domain) (*users.Dom
 
 func (repository repositoryUsers) GetUserByID(id int) (*users.Domain, error) {
 	recordUser := Users{}
-	if err := repository.DB.Joins("PersonalData").First(&recordUser, "users.id", id).Error; err != nil {
+	if err := repository.DB.Joins("PersonalData").First(&recordUser, "users.id = ?", id).Error; err != nil {
 		return &users.Domain{}, err
 	}
 	result := recordUser.toDomain()

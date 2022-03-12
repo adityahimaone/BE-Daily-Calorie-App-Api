@@ -49,7 +49,8 @@ func (controller *Controller) UpdateUser(echoContext echo.Context) error {
 		return controllers.NewErrorResponse(echoContext, http.StatusBadRequest, err)
 	}
 	domainUser, domainPersonalData := _request.ToDomain(&req)
-	userID := 1
+	userID, _ := strconv.Atoi(echoContext.Param("id"))
+	log.Println(userID)
 	resp, err := controller.serviceUser.EditUser(userID, domainUser, domainPersonalData)
 	if err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusBadRequest, err)

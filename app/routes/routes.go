@@ -33,6 +33,7 @@ func (controller *HandlerList) RouteRegister(e *echo.Echo) {
 	//Admin Endpoint
 	group.POST("/admin/login", controller.AdminController.LoginAdmin)
 	group.POST("/admin/register", controller.AdminController.RegisterAdmin)
+	group.GET("/admin/users/", controller.UserController.GetAllUser, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationAdmin())
 
 	//User Endpoint
 	group.POST("/users/login", controller.UserController.LoginUser)
@@ -40,7 +41,6 @@ func (controller *HandlerList) RouteRegister(e *echo.Echo) {
 	group.GET("/users/:id", controller.UserController.GetUserById, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
 	group.PUT("/users/edit/:id", controller.UserController.UpdateUser, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
 	group.DELETE("/users/:id", controller.UserController.DeleteUser, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationAdmin())
-	group.GET("/users/", controller.UserController.GetAllUser, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationAdmin())
 
 	//Food Endpoint
 	group.GET("/foods/:id", controller.FoodController.GetFoodByID, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
