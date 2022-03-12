@@ -1,0 +1,46 @@
+rows, err := repository.DB.Table("histories").Where("user_id = ?", userID).
+		Joins("Join histories_details on histories_details.histories_id = histories.id").
+		Joins("Join foods on foods.id = histories_details.food_id").
+		Select("histories.id, histories.user_id, histories_details.histories_id, histories_details.food_id" + ", foods.title, foods.calories").Rows()
+
+	if err != nil {
+		return &[]histories.Domain{}, err
+	}
+
+	type Food struct {
+		title    string
+		calories float64
+	}
+
+	type HistoriesDetails struct {
+		histories_id int
+		food_id      int
+		food         Food
+	}
+
+	type HistoriesTemp struct {
+		ID              int
+		UserID          int
+		HistoriesID     int
+		FoodID          int
+		Title           string
+		Calories        float64
+		HistoriesDetail []HistoriesDetails
+	}
+	history := make([]HistoriesTemp, 0)
+
+	for rows.Next() {
+		histories := HistoriesTemp{}
+		food := Food{}
+		historiesDetails := HistoriesDetails{}
+
+		err := rows.Scan(&histories.ID, &histories.UserID, &historiesDetails.histories_id, &historiesDetails.food_id, &food.title, &food.calories)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		historiesDetails.food = food
+		histories.HistoriesDetail = append(histories.HistoriesDetail, historiesDetails)
+		history = append(history, histories)
+	}
+	log.Print(pretty.Sprint(history))
