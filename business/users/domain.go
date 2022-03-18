@@ -14,6 +14,8 @@ type Domain struct {
 	Gender         string
 	PersonalDataID int
 	Calories       float64
+	Age            int
+	ActivityType   int
 	Weight         int
 	Height         int
 	CreatedAt      time.Time
@@ -28,6 +30,7 @@ type Service interface {
 	GetAllUser() (*[]Domain, error)
 	EditUser(id int, user *Domain, personalData *personal_data.Domain) (*Domain, error)
 	DeleteUser(id int) (string, error)
+	CountCalories(userData *Domain, personalData *personal_data.Domain) (float64, error)
 }
 
 type Repository interface {

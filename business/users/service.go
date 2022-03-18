@@ -36,6 +36,38 @@ func (service *serviceUsers) RegisterUser(userData *Domain, personalData *person
 	return result, err
 }
 
+func (service *serviceUsers) CountCalories(userData *Domain, personalData *personal_data.Domain) (float64, error) {
+	activityTypeValue := userData.ActivityType
+	weight := float64(personalData.Weight)
+	height := float64(personalData.Height)
+	age := float64(userData.Age)
+	gender := userData.Gender
+
+	valueActivity := 0.0
+	calories := 0.0
+	switch activityTypeValue {
+	case 1:
+		valueActivity = 1.2
+	case 2:
+		valueActivity = 1.375
+	case 3:
+		valueActivity = 1.55
+	case 4:
+		valueActivity = 1.725
+	case 5:
+		valueActivity = 1.9
+	default:
+		valueActivity = 1.0
+	}
+
+	if gender == "male" {
+		calories = (10 * weight) + (6.25 * height) - (5*age)*valueActivity
+	} else {
+		calories = ((10 * weight) + (6.25 * height) - (5 * age) - 161) * valueActivity
+	}
+	return calories, nil
+}
+
 func (service *serviceUsers) Login(email string, password string) (string, error) {
 	user, err := service.userRepository.GetUserByEmail(email)
 	if err != nil {

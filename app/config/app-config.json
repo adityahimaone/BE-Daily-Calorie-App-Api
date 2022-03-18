@@ -17,7 +17,7 @@
     "name": "daily_calorie"
   },
   "jwt": {
-    "secret": "tokens4nga#raha$!asek4lL",
+    "secret": "tokensangatrahasia",
     "expired": 2
   },
   "spoonacular": {
