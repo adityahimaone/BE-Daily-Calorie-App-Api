@@ -35,7 +35,6 @@ func (api foodAPI) GetFoodByName(name string) (*[]foodsAPI.Domain, error) {
 		return &[]foodsAPI.Domain{}, err
 	}
 	defer response.Body.Close()
-
 	food := FoodSource{}
 	err = json.Unmarshal(responseData, &food)
 	if err != nil {

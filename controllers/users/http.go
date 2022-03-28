@@ -82,9 +82,21 @@ func (controller *Controller) LoginUser(echoContext echo.Context) error {
 	}
 	log.Println(req)
 	resp, err := controller.serviceUser.Login(req.Email, req.Password)
-	log.Println(resp)
+	if err != nil {
+		return controllers.NewErrorResponse(echoContext, http.StatusUnauthorized, err)
+	}
+	return controllers.NewSuccessResponse(echoContext, _response.UserLogin{Token: resp})
+}
+
+func (controller *Controller) CountCalories(echoContext echo.Context) error {
+	req := _request.User{}
+	if err := echoContext.Bind(&req); err != nil {
+		return controllers.NewErrorResponse(echoContext, http.StatusBadRequest, err)
+	}
+	domainUser, domainPersonalData := _request.ToDomain(&req)
+	resp, err := controller.serviceUser.CountCalories(domainUser, domainPersonalData)
 	if err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusInternalServerError, err)
 	}
-	return controllers.NewSuccessResponse(echoContext, _response.UserLogin{Token: resp})
+	return controllers.NewSuccessResponse(echoContext, _response.CountCalories{Calories: resp})
 }

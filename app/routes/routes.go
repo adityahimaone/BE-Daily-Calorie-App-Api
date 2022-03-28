@@ -41,6 +41,7 @@ func (controller *HandlerList) RouteRegister(e *echo.Echo) {
 	group.GET("/users/:id", controller.UserController.GetUserById, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
 	group.PUT("/users/edit/:id", controller.UserController.UpdateUser, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
 	group.DELETE("/users/:id", controller.UserController.DeleteUser, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationAdmin())
+	group.POST("/users/count-calories", controller.UserController.CountCalories)
 
 	//Food Endpoint
 	group.GET("/foods/:id", controller.FoodController.GetFoodByID, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
@@ -64,12 +65,12 @@ func (controller *HandlerList) RouteRegister(e *echo.Echo) {
 	group.DELETE("/histories_detail/:id", controller.HistoriesDetailController.DeleteDetailHistory, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
 
 	//Foods API Endpoint
-	group.GET("/foods/api/", controller.FoodAPIController.GetFoodByName, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
+	group.GET("/open-api/food/", controller.FoodAPIController.GetFoodByName, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
 	group.POST("/open-api/meal-plan", controller.FoodAPIController.GetMealPlan, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUserAndAdmin())
 
 	//Meal Plans Endpoint
 	group.POST("/meal-plan", controller.MealPlansController.CreateMealPlans, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
-	group.GET("/meal-plan", controller.MealPlansController.GetLastMealPlans, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
+	group.GET("/meal-plan/last", controller.MealPlansController.GetLastMealPlans, middleware.JWTWithConfig(controller.JWTMiddleware), RoleValidationUser())
 
 }
 

@@ -23,18 +23,14 @@ func (service serviceAdmin) Register(admin *Domain) (*Domain, error) {
 	if err != nil {
 		return &Domain{}, business.ErrInternalServer
 	}
-
 	admin.Password = passwordHash
-
 	result, err := service.adminRepository.Insert(admin)
-
 	if result == (&Domain{}) {
 		return &Domain{}, business.ErrDuplicateData
 	}
 	if err != nil {
 		return &Domain{}, business.ErrDuplicateData
 	}
-
 	return result, nil
 }
 
@@ -49,7 +45,6 @@ func (service serviceAdmin) Login(username, password string) (string, error) {
 	if !helpers.ValidateHash(password, admin.Password) {
 		return "Error Validate Hash", business.ErrInvalidLogin
 	}
-
 	token := service.jwtAuth.GenerateToken(admin.ID, "admin")
 	return token, err
 }

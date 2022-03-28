@@ -15,7 +15,7 @@ type Domain struct {
 	PersonalDataID int
 	Calories       float64
 	Age            int
-	ActivityType   int
+	ActivityType   float64
 	Weight         int
 	Height         int
 	CreatedAt      time.Time

@@ -58,7 +58,7 @@ func (controller *Controller) CreateFood(echoContext echo.Context) error {
 	if err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusBadRequest, err)
 	}
-	return controllers.NewSuccessResponse(echoContext, _response.FromDomain(*resp))
+	return controllers.NewSuccessCreatedResponse(echoContext, _response.FromDomain(*resp))
 }
 
 func (controller *Controller) UpdateFood(echoContext echo.Context) error {

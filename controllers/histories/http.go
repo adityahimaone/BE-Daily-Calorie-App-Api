@@ -31,7 +31,7 @@ func (controller *Controller) CreateHistories(echoContext echo.Context) error {
 	if err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusInternalServerError, err)
 	}
-	return controllers.NewSuccessResponse(echoContext, response.FromDomain(*resp))
+	return controllers.NewSuccessCreatedResponse(echoContext, response.FromDomain(*resp))
 }
 
 func (controller *Controller) CreateWater(echoContext echo.Context) error {
@@ -89,7 +89,7 @@ func (controller *Controller) CreateHistoriesFromAPI(echoContext echo.Context) e
 	if err != nil {
 		return controllers.NewErrorResponse(echoContext, http.StatusInternalServerError, err)
 	}
-	return controllers.NewSuccessResponse(echoContext, response.FromDomain(*resp))
+	return controllers.NewSuccessCreatedResponse(echoContext, response.FromDomain(*resp))
 }
 
 func (controller *Controller) DeleteHistoriesDetail(echoContext echo.Context) error {

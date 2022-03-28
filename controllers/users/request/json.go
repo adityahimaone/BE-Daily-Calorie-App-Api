@@ -13,7 +13,7 @@ type User struct {
 	AvatarUrl      string               `json:"avatar_url"`
 	Gender         string               `json:"gender"`
 	Age            int                  `json:"age"`
-	ActivityType   int                  `json:"activity_type"`
+	ActivityType   float64              `json:"activity_type"`
 	PersonalDataID int                  `json:"personal_data_id"`
 	PersonalData   request.PersonalData `json:"personal_data"`
 }
