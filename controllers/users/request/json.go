@@ -12,6 +12,8 @@ type User struct {
 	Password       string               `json:"password"`
 	AvatarUrl      string               `json:"avatar_url"`
 	Gender         string               `json:"gender"`
+	Age            int                  `json:"age"`
+	ActivityType   float64              `json:"activity_type"`
 	PersonalDataID int                  `json:"personal_data_id"`
 	PersonalData   request.PersonalData `json:"personal_data"`
 }
@@ -28,6 +30,8 @@ func ToDomain(request *User) (*users.Domain, *personal_data.Domain) {
 			Password:       request.Password,
 			AvatarUrl:      request.AvatarUrl,
 			Gender:         request.Gender,
+			Age:            request.Age,
+			ActivityType:   request.ActivityType,
 			PersonalDataID: request.PersonalDataID,
 		}, &personal_data.Domain{
 			Calories: request.PersonalData.Calories,

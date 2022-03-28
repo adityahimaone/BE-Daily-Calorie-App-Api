@@ -48,3 +48,7 @@ func FromDomainArray(domain []users.Domain) []User {
 type UserLogin struct {
 	Token string `json:"token"`
 }
+
+type CountCalories struct {
+	Calories float64 `json:"calories"`
+}

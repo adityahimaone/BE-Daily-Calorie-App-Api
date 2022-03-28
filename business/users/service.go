@@ -5,6 +5,7 @@ import (
 	"Daily-Calorie-App-API/business"
 	"Daily-Calorie-App-API/business/personal_data"
 	"Daily-Calorie-App-API/helpers"
+	"math"
 )
 
 type serviceUsers struct {
@@ -22,6 +23,11 @@ func NewUserService(repositoryUser Repository, repositoryPersonalData personal_d
 }
 
 func (service *serviceUsers) RegisterUser(userData *Domain, personalData *personal_data.Domain) (*Domain, error) {
+	countCalories, err := service.CountCalories(userData, personalData)
+	if err != nil {
+		return nil, err
+	}
+	personalData.Calories = countCalories
 	newPersonalData, err := service.personaldataRepository.Insert(personalData)
 	if err != nil {
 		return &Domain{}, business.ErrInsertData
@@ -34,6 +40,24 @@ func (service *serviceUsers) RegisterUser(userData *Domain, personalData *person
 		return &Domain{}, business.ErrInsertData
 	}
 	return result, err
+}
+
+func (service *serviceUsers) CountCalories(userData *Domain, personalData *personal_data.Domain) (float64, error) {
+	activityTypeValue := userData.ActivityType
+	weight := float64(personalData.Weight)
+	height := float64(personalData.Height)
+	age := float64(userData.Age)
+	gender := userData.Gender
+	calories := 0.0
+
+	if gender == "male" {
+		calories = (10 * weight) + (6.25 * height) - (5*age)*activityTypeValue
+	} else {
+		calories = ((10 * weight) + (6.25 * height) - (5 * age) - 161) * activityTypeValue
+	}
+
+	result := math.Round(calories*100) / 100
+	return result, nil
 }
 
 func (service *serviceUsers) Login(email string, password string) (string, error) {

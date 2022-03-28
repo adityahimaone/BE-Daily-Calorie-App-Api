@@ -13,6 +13,7 @@ require (
 
 require (
 	github.com/kr/pretty v0.2.0
+	github.com/stretchr/testify v1.7.1 // indirect
 	gorm.io/datatypes v1.0.5
 	gorm.io/driver/postgres v1.2.3
 	gorm.io/driver/sqlite v1.2.6 // indirect

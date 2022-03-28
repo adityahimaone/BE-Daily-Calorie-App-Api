@@ -9,12 +9,12 @@ type Foods struct {
 	gorm.Model
 	ID          uint    `gorm:"primary_key" json:"ID,omitempty"`
 	Title       string  `gorm:"type:varchar(100);not null;unique" json:"title,omitempty"`
-	ImgURL      string  `gorm:"type:varchar(100);not null" json:"imgURL,omitempty"`
-	Calories    float64 `json:"calories,omitempty"`
-	Fat         float64 `json:"fat,omitempty"`
-	Carbs       float64 `json:"carbs,omitempty"`
-	Protein     float64 `json:"protein,omitempty"`
-	ServingSize float64 `json:"servingSize,omitempty"`
+	ImgURL      string  `gorm:"type:varchar(255);not null" json:"imgURL,omitempty"`
+	Calories    float64 `gorm:"type:decimal(10,2)" json:"calories,omitempty"`
+	Fat         float64 `gorm:"type:decimal(10,2)" json:"fat,omitempty"`
+	Carbs       float64 `gorm:"type:decimal(10,2)" json:"carbs,omitempty"`
+	Protein     float64 `gorm:"type:decimal(10,2)" json:"protein,omitempty"`
+	ServingSize float64 `gorm:"type:decimal(10,2)" json:"servingSize,omitempty"`
 }
 
 func (record *Foods) toDomain() foods.Domain {

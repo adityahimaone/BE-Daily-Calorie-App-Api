@@ -17,7 +17,7 @@ type Histories struct {
 	Water            int                                `gorm:"type:int"`
 	TotalCalories    float64                            `gorm:"type:decimal(10,2)"`
 	TotalFood        int                                `gorm:"type:int"`
-	Date             string
+	Date             string                             `gorm:"type:varchar(100);"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }

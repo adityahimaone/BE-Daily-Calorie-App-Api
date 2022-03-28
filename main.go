@@ -63,8 +63,9 @@ func main() {
 	}
 
 	//db := configDB.IntialDB()
-	dbPostgres := configPostgres.IntialPostgresSQL()
 	//_dbDriver.MigrateDB(db)
+
+	dbPostgres := configPostgres.IntialPostgresSQL()
 	_dbPostgres.MigrateDB(dbPostgres)
 	e := echo.New()
 

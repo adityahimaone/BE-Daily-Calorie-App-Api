@@ -12,10 +12,10 @@ type MealPlans struct {
 	ID                 uint        `gorm:"primary_key"`
 	UserID             uint        `gorm:"not null"`
 	User               users.Users `gorm:"constraint:OnUpdate:NO ACTION,OnDelete:NO ACTION;"`
-	DietaryPreferences string
-	PlanType           string
-	RangeCalories      string
-	MealPlans          string
+	DietaryPreferences string      `gorm:"type:varchar(100);"`
+	PlanType           string      `gorm:"type:varchar(100);"`
+	RangeCalories      string      `gorm:"type:varchar(100);"`
+	MealPlans          string      `gorm:"type:json"`
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
 }

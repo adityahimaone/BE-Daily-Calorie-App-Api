@@ -15,18 +15,18 @@ func NewRepositoryAdminMySQL(db *gorm.DB) admins.Repository {
 	}
 }
 
-func (r repositoryAdmin) Insert(admin *admins.Domain) (*admins.Domain, error) {
+func (repository repositoryAdmin) Insert(admin *admins.Domain) (*admins.Domain, error) {
 	recordAdmin := fromDomain(*admin)
-	if err := r.DB.Create(&recordAdmin).Error; err != nil {
+	if err := repository.DB.Create(&recordAdmin).Error; err != nil {
 		return &admins.Domain{}, err
 	}
 	result := recordAdmin.toDomain()
 	return &result, nil
 }
 
-func (r repositoryAdmin) GetAdminByUsername(username string) (*admins.Domain, error) {
+func (repository repositoryAdmin) GetAdminByUsername(username string) (*admins.Domain, error) {
 	recordAdmin := Admin{}
-	if err := r.DB.Where("username = ?", username).First(&recordAdmin).Error; err != nil {
+	if err := repository.DB.Where("username = ?", username).First(&recordAdmin).Error; err != nil {
 		return &admins.Domain{}, err
 	}
 	result := recordAdmin.toDomain()
