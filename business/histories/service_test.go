@@ -17,8 +17,8 @@ import (
 )
 
 var (
-	mockHistoriesRepository    mocks.Repository
-	mockHistoriesService       mocks.Service
+	mockHistoriesRepository mocks.Repository
+	//mockHistoriesService       mocks.Service
 	mockUsersService           _mocksUsers.Service
 	mockFoodsService           _mocksFoods.Service
 	mockHistoriesDetailService _mocksHistoriesDetail.Service
@@ -87,7 +87,7 @@ func TestHistories_CreateHistoriesFromAPI(t *testing.T) {
 			Protein:  10,
 			Fat:      10,
 		}
-		mockHistoriesService.On("CreateHistories", mock.Anything, mock.Anything).Return(&historiesDomain, nil).Once()
+		//mockHistoriesService.On("CreateHistories", mock.Anything, mock.Anything).Return(&historiesDomain, nil).Once()
 		result, err := hitoriesService.CreateHistoriesFromAPI(&inputHistories, &inputFood)
 		assert.Nil(t, err)
 		assert.NotNil(t, result)
@@ -116,7 +116,7 @@ func TestHistories_CreateHistoriesFromAPI(t *testing.T) {
 		foodsDomain.ID = 0
 		if foodsDomain.ID == 0 {
 			mockFoodsService.On("AddFood", mock.Anything, mock.Anything).Return(&foodsDomain, nil).Once()
-			mockHistoriesService.On("CreateHistories", mock.Anything, mock.Anything).Return(&historiesDomain, nil).Once()
+			//mockHistoriesService.On("CreateHistories", mock.Anything, mock.Anything).Return(&historiesDomain, nil).Once()
 		}
 		result, err := hitoriesService.CreateHistoriesFromAPI(&inputHistories, &inputFood)
 		assert.Nil(t, err)
@@ -212,6 +212,7 @@ func TestHistories_CreateWater(t *testing.T) {
 	})
 	t.Run("Invalid GetUserByID", func(t *testing.T) {
 		mockUsersService.On("GetUserByID", mock.Anything, mock.Anything).Return(&users.Domain{}, assert.AnError).Once()
+		//mockHistoriesRepository.On("Insert", mock.Anything, mock.Anything).Return(&historiesDomain, assert.AnError).Once()
 		inputHistories := histories.Domain{
 			UserID: 1,
 			FoodID: 1,
@@ -231,8 +232,11 @@ func TestHistories_CreateWater(t *testing.T) {
 			Water:  1,
 			Date:   "02-01-2006",
 		}
+		//historiesDomain.ID = 1
 		if historiesDomain.ID != 0 {
 			mockHistoriesRepository.On("UpdateWater", mock.Anything, mock.Anything).Return(&histories.Domain{}, assert.AnError).Once()
+		} else {
+			mockHistoriesRepository.On("Insert", mock.Anything, mock.Anything).Return(&historiesDomain, assert.AnError).Once()
 		}
 		result, err := hitoriesService.CreateWater(&inputHistories)
 		assert.NotNil(t, err)

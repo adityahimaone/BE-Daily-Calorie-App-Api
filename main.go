@@ -85,7 +85,7 @@ func main() {
 	adminController := _controllerAdmin.NewController(adminService)
 
 	historiesdetailRepository := _driverFactory.NewHistoriesDetailRepository(dbPostgres)
-	historiesdetailService := _serviceHistoriesDetail.NewHistoriesDetailService(historiesdetailRepository, foodService)
+	historiesdetailService := _serviceHistoriesDetail.NewHistoriesDetailService(historiesdetailRepository)
 	historiesdetailController := _controllerHistoriesDetail.NewController(historiesdetailService)
 
 	historiesRepository := _driverFactory.NewHistoriesRepository(dbPostgres)
@@ -97,7 +97,7 @@ func main() {
 	foodapiController := _controllerFoodsAPI.NewController(foodapiService)
 
 	mealplansRepository := _driverFactory.NewMealPlansRepository(dbPostgres)
-	mealplansService := _serviceMealplans.NewMealPlansService(mealplansRepository, foodapiService, &configJWT)
+	mealplansService := _serviceMealplans.NewMealPlansService(mealplansRepository, &configJWT)
 	mealplansController := _mealplanController.NewController(mealplansService)
 
 	// initial of route
