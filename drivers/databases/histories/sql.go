@@ -75,7 +75,7 @@ func (repository repositoryHistories) GetHistoriesByUserIDandDate(userID int, da
 func (repository repositoryHistories) GetLastHistoryByUserID(userID int) (*histories.Domain, error) {
 	var recordHistories Histories
 	//dateTime := time.Now().Format("02-01-2006")
-	if err := repository.DB.Joins("User").Preload("HistoriesDetails").Preload("HistoriesDetails.Food").Order("date asc").Last(&recordHistories, "user_id = ?", userID).Error; err != nil {
+	if err := repository.DB.Joins("User").Preload("HistoriesDetails").Preload("HistoriesDetails.Food").Order("created_at desc").Last(&recordHistories, "user_id = ?", userID).Error; err != nil {
 		return &histories.Domain{}, err
 	}
 	//log.Println(pretty.Sprint(recordHistories))
@@ -85,7 +85,7 @@ func (repository repositoryHistories) GetLastHistoryByUserID(userID int) (*histo
 
 func (repository repositoryHistories) GetAllHistoryByUserID(userID int) (*[]histories.Domain, error) {
 	var recordHistories []Histories
-	if err := repository.DB.Joins("User").Preload("HistoriesDetails").Preload("HistoriesDetails.Food").Order("date asc").Find(&recordHistories, "user_id = ?", userID).Error; err != nil {
+	if err := repository.DB.Joins("User").Preload("HistoriesDetails").Preload("HistoriesDetails.Food").Order("created_at desc").Find(&recordHistories, "user_id = ?", userID).Error; err != nil {
 		return &[]histories.Domain{}, err
 	}
 	result := toDomainArray(recordHistories)

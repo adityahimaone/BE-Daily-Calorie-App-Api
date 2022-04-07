@@ -9,7 +9,7 @@ type repositoryAdmin struct {
 	DB *gorm.DB
 }
 
-func NewRepositoryAdminMySQL(db *gorm.DB) admins.Repository {
+func NewRepositoryAdmin(db *gorm.DB) admins.Repository {
 	return &repositoryAdmin{
 		DB: db,
 	}

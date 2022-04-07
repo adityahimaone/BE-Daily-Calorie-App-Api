@@ -33,7 +33,6 @@ func (config *ConfigPostgresSQL) IntialPostgresSQL() *gorm.DB {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	return db
 }
 
