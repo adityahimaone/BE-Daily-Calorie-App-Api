@@ -9,7 +9,7 @@ import (
 type Histories struct {
 	ID               int                                `json:"id"`
 	UserID           int                                `json:"user_id"`
-	UserFullname     string                             `json:"fullname"`
+	Fullname         string                             `json:"fullname"`
 	Water            int                                `json:"water"`
 	TotalCalories    float64                            `json:"total_calories"`
 	TotalFood        int                                `json:"total_food"`
@@ -23,7 +23,7 @@ func FromDomain(domain histories.Domain) Histories {
 	return Histories{
 		ID:               domain.ID,
 		UserID:           domain.UserID,
-		UserFullname:     domain.UserName,
+		Fullname:         domain.UserName,
 		Water:            domain.Water,
 		TotalCalories:    domain.TotalCalories,
 		TotalFood:        domain.TotalFood,

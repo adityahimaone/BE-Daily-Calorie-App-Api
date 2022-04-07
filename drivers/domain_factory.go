@@ -34,7 +34,7 @@ func NewFoodRepository(db *gorm.DB) foodsDomain.Repository {
 }
 
 func NewAdminRepository(db *gorm.DB) adminDomain.Repository {
-	return adminDB.NewRepositoryAdminMySQL(db)
+	return adminDB.NewRepositoryAdmin(db)
 }
 
 func NewHistoriesRepository(db *gorm.DB) historiesDomain.Repository {

@@ -2,18 +2,15 @@ package histories_detail
 
 import (
 	"Daily-Calorie-App-API/business"
-	"Daily-Calorie-App-API/business/foods"
 )
 
 type serviceHistoriesDetail struct {
 	historiesdetailRepository Repository
-	foodsService              foods.Service
 }
 
-func NewHistoriesDetailService(historiesdetailRepository Repository, foodsService foods.Service) Service {
+func NewHistoriesDetailService(historiesdetailRepository Repository) Service {
 	return &serviceHistoriesDetail{
 		historiesdetailRepository: historiesdetailRepository,
-		foodsService:              foodsService,
 	}
 }
 
