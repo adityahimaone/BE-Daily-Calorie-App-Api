@@ -10,7 +10,7 @@
     "name": "dailycalorieapi_test_2"
   },
   "postgres": {
-    "host": "34.69.97.197",
+    "host": "127.0.0.1",
     "port": "5432",
     "user": "postgres",
     "pass": "1167",
