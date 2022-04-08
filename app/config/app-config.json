@@ -1,0 +1,34 @@
+{
+  "server": {
+    "address": ":8080"
+  },
+  "database": {
+    "host": "127.0.0.1",
+    "port": "3306",
+    "user": "root",
+    "pass": "",
+    "name": "dailycalorieapi_test_2"
+  },
+  "postgres": {
+    "host": "34.101.105.6",
+    "port": "5432",
+    "user": "postgres",
+    "pass": "1167",
+    "name": "postgres"
+  },
+  "jwt": {
+    "secret": "tokensangatrahasia",
+    "expired": 2
+  },
+  "spoonacular": {
+    "apikey" : "f85868cf3e9f448c851d46fe687a40ac"
+  },
+  "edamamFoodAPI": {
+    "appId": "240ecb44",
+    "appKey": "66a75a164fce25dfcbcbff27ed825fac"
+  },
+  "edamamRecipeAPI": {
+    "appId": "ace62b9f",
+    "appKey": "d63b97c069015e1d981f048d2c3eaf27"
+  }
+}
