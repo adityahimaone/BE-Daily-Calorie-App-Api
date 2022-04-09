@@ -24,7 +24,7 @@
     "name": "postgres"
   },
   "postgres-aws": {
-    "host": "host.docker.internal",
+    "host": "dbpostgres",
     "port": "5432",
     "user": "postgres",
     "pass": "1167",
