@@ -50,11 +50,11 @@ func main() {
 	//}
 
 	configPostgres := _dbPostgres.ConfigPostgresSQL{
-		DBHost:     viper.GetString(`postgres.host`),
-		DBUsername: viper.GetString(`postgres.user`),
-		DBPassword: viper.GetString(`postgres.pass`),
-		DBDatabase: viper.GetString(`postgres.name`),
-		DBPort:     viper.GetString(`postgres.port`),
+		DBHost:     viper.GetString(`postgres-aws.host`),
+		DBUsername: viper.GetString(`postgres-aws.user`),
+		DBPassword: viper.GetString(`postgres-aws.pass`),
+		DBDatabase: viper.GetString(`postgres-aws.name`),
+		DBPort:     viper.GetString(`postgres-aws.port`),
 	}
 
 	configJWT := auth.ConfigJWT{

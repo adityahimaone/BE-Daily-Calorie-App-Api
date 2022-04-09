@@ -14,10 +14,17 @@
     "port": "5432",
     "user": "postgres",
     "pass": "1167",
-    "name": "postgres"
+    "name": "daily_calorie_test_1"
   },
   "postgres-gcloud": {
     "host": "34.101.105.6",
+    "port": "5432",
+    "user": "postgres",
+    "pass": "1167",
+    "name": "postgres"
+  },
+  "postgres-aws": {
+    "host": "host.docker.internal",
     "port": "5432",
     "user": "postgres",
     "pass": "1167",
