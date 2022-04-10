@@ -1,17 +1,17 @@
 version: '3'
 services:
-#  app:
-#    container_name: daily-calorie
-#    build: .
-#    ports:
-#      - 8080:8080
-#    restart: on-failure
-#    volumes:
-#      - api:/usr/src/app/
-#    depends_on:
-#      - dbpostgres
-#    networks:
-#      - fullstack
+  app:
+    container_name: daily-calorie
+    build: .
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - dbpostgres
+    networks:
+      - fullstack
 
 
   dbpostgres:
@@ -23,7 +23,7 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - DATABASE_HOST=${DB_HOST}
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - database_postgres:/var/lib/postgresql/data
     networks:
