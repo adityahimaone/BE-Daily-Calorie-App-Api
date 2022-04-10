@@ -1,674 +1,2232 @@
 openapi: 3.0.0
 info:
-  description: |
-    Track your calories everyday
-  version: "1.0.0"
-  title:  Aplikasi Daily Calorie
+  title: Aplikasi Daily Calorie
+  version: 1.0.0
 servers:
-  - url: 'https://localhost:8080/'
-tags:
-  - name: user
-    description: user resource
-  - name: food
-    description: food resource
-  - name: histories
-    description: histories resource
-  - name: calories
-    description: calories resource
-  - name: admin
-    description: admin resource
-paths:
-  /food:
-    post:
-      tags:
-        - food
-      summary: Add a new Food
-      operationId: addFood
-      responses:
-        '405':
-          description: Invalid input
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Food'
-        required: true
-    get:
-      tags:
-        - food
-      summary: Get all Food
-      operationId: getFood
-      responses:
-        '200':
-          description: successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Food_List'
-  '/food/{id}':
-    get:
-      tags:
-        - food
-      summary: Find Food by ID
-      description: Returns a single Food
-      operationId: getFoodById
-      parameters:
-        - name: id
-          in: path
-          description: ID of food to return
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Food'
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Food not found
-    put:
-      tags:
-        - food
-      summary: Update an existing Food
-      operationId: updateFood
-      parameters:
-        - name: id
-          in: path
-          description: ID of food to return
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '400':
-          description: Invalid ID
-        '404':
-          description: Food not found
-        '405':
-          description: Validation exception
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Food'
-        required: true
-    delete:
-      tags:
-        - food
-      summary: Delete Food
-      description: This can only be done by the logged in user.
-      operationId: deleteFood
-      parameters:
-        - name: id
-          in: path
-          description: The name that needs to be deleted
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Delete Success
-        '400':
-          description: Invalid Id
-        '404':
-          description: Food not found
-  '/food/{name}':
-    get:
-      tags:
-        - food
-      summary: Find Food by Name
-      description: Returns a single Food
-      operationId: getFoodByName
-      parameters:
-        - name: name
-          in: path
-          description: Name of food to return
-          required: true
-          schema:
-            type: string
-            format: int64
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Food'
-        '400':
-          description: Invalid Name
-        '404':
-          description: Food not found
-  /users/register:
-    post:
-      tags:
-        - user
-      summary: Register user
-      description: For Register New User
-      operationId: createUser
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_Success'
-        '404':
-          description: invalid register
-
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Created user object
-        required: true
-  /users/login:
-    post:
-      tags:
-        - user
-      summary: Login User
-      operationId: loginUser
-      parameters:
-        - name: username
-          in: query
-          description: The user name for login
-          required: true
-          schema:
-            type: string
-        - name: password
-          in: query
-          description: The password for login in clear text
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: successful operation
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Login'
-        '400':
-          description: Invalid username/password supplied
-  '/users/{id}':
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - user
-      summary: Get user by ID (Using JWT Auth)
-      operationId: getUserByName
-      parameters:
-        - name: id
-          in: path
-          description: The name that needs to be fetched. Use user1 for testing.
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: successful operation
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
-        '400':
-          description: Invalid username supplied
-        '404':
-          description: User not found
-    put:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - user
-      summary: Updated user (Using JWT Auth)
-      description: This can only be done by the logged in user.
-      operationId: updateUser
-      parameters:
-        - name: id
-          in: path
-          description: name that need to be updated
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success Delete
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-        '400':
-          description: Invalid user supplied
-        '404':
-          description: User not found
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-        description: Updated user object
-        required: true
-    delete:
-      tags:
-        - user
-      summary: Delete User
-      description: This can only be done by the logged in admin.
-      operationId: deleteFood
-      parameters:
-        - name: id
-          in: path
-          description: The name that needs to be deleted
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Delete Success
-        '400':
-          description: Invalid Id
-        '404':
-          description: User not found
-  /histories:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - histories
-      summary: Create Histories
-      description: This can only be done by the logged in user.
-      operationId: createHistorie
-      responses:
-        '200':
-          description: successful
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Historie'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: string
-              example: nasi padang
-        description: Created user Historie
-        required: true
-  /histories/user:
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - histories
-      summary: Get All Histories By User
-      description: This can only be done by the logged in user.
-      operationId: getAllHistorie
-      responses:
-        '200':
-          description: successful
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Histories_List'
-  /histories/stat:
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - histories
-      summary: Get Stat By User
-      description: This can only be done by the logged in user.
-      operationId: getStat
-      responses:
-        '200':
-          description: successful
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User_stat'
-  /calorie:
-    post:
-      tags:
-        - calories
-      summary: Count Calorie
-      description: This can only be done by the logged in user.
-      operationId: createCalorie
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_Calorie'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Calorie'
-        description: Created user object
-        required: true
-  /calorie/save:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - calories
-      summary: Save Calorie (Insert/Update)
-      description: This can only be done by the logged in user.
-      operationId: saveCalorie
-      responses:
-        '200':
-          description: successful operation
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_Calorie'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Calorie'
-        description: Created user object
-        required: true
-  /calorie/user:
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - calories
-      summary: Get Calorie By User ID
-      description: This can only be done by the logged in user.
-      operationId: getCalorie
-      responses:
-        '200':
-          description: successful operation
-          headers:
-            Bearer-Token:
-              description: JWT Auth
-              schema:
-                type: string
-                format: date-time
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Response_Calorie'
-externalDocs:
-  description: Find out more about Swagger
-  url: 'https://swagger.io'
+  - url: http://localhost:8080
 components:
-  schemas:
-    User:
-      properties:
-        email:
-          type: string
-          example: budi@mail.com
-        password:
-          type: string
-          example: secret
-        fullname:
-          type: string
-          example: budi luhut
-        gender:
-          type: string
-          example: male
-        height:
-          type: integer
-          example: 170
-        weight:
-          type: integer
-          example: 60
-    Food:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: uuid
-          example: 15
-        name:
-          type: integer
-          example: Bakso
-        photo:
-          type: string
-          example: bakso.jpg
-        calorie:
-          type: integer
-          example: 351
-        created_at:
-          type: string
-          format: timestamp
-          example: '124123413'
-        updated_at:
-          type: string
-          format: timestamp
-          example: '124123413'
-    Food_List:
-      type: "array"
-      items:
-        $ref: "#/components/schemas/Food"
-      example:
-        - id: 1
-          name: Bakso
-          image: bakso.jpg
-          calorie: 254.10
-          created_at: '124123413'
-          updated_at: '124123413'
-        - id: 2
-          name: Sate
-          image: sate.jpg
-          calorie: 350.21
-          created_at: '124123413'
-          updated_at: '124123413'
-    Login:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: uuid
-          example: 15
-        token:
-          type: string
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzIyMTU5ODUsInVzZXJpZCI6MTF9.N72CvB3ffoZKvntUC4MAtDPpzQTQjIfzvnNSTNBuC7A
-    Historie:
-      properties:
-        id:
-          type: integer
-          format: uuid
-          example: 15
-        user_id:
-          type: integer
-          example: 12
-        name_user:
-          type: string
-          example: opung luhut
-        food_id:
-          type: integer
-          example: 12
-        food_name:
-          type: string
-          example: Sate
-        calorie:
-          type: integer
-          example: 500
-        date:
-          type: string
-          format: date
-          example: '7102021'
-        created_at:
-          type: string
-          format: timestamp
-          example: '124123413'
-        updated_at:
-          type: string
-          format: timestamp
-          example: '124123413'
-    Histories_List:
-      type: "array"
-      items:
-        $ref: "#/components/schemas/Historie"
-      example:
-        - id: 1
-          user_id: 15
-          name_user: opung luhut
-          food_id: 1
-          calorie: 210
-          food_name: nasi padang
-          date: '7102021'
-          created_at: '124123413'
-          updated_at: '124123413'
-        - id: 2
-          user_id: 15
-          name_user: opung luhut
-          food_id: 2
-          calorie: 351
-          food_name: bakso
-          date: '7102021'
-          created_at: '124123413'
-          updated_at: '124123413'
-    Calorie:
-      properties:
-        id:
-          type: integer
-          format: uuid
-          example: 10
-        weight:
-          type: integer
-          example: 50
-        height:
-          type: integer
-          example: 165
-        age:
-          type: integer
-          example: 25
-        activity:
-          type: integer
-          example: 2
-    User_stat:
-      properties:
-        calorie_need:
-          type: integer
-          example: 1328.125
-        calorie_current:
-          type: integer
-          example: 1200
-        percentage:
-          type: string
-          example: 85%
-        status:
-          type: string
-          example: cukup
-    Response_Calorie:
-      properties:
-        user_id:
-          type: integer
-          example: 1
-        result_calorie:
-          type: integer
-          example: 2210
-    Meta_Success:
-      properties:
-        Message:
-          type: string
-          example: Data Berhasil
-        Status:
-          type: string
-          example: Success
-        Code:
-          type: integer
-          example: 200
-    Response_Success_Register:
-      properties:
-        Meta:
-          type: object
-          example: {
-            "Message": "Data Berhasil",
-            "Status": "Success",
-            "Code": 200
-          }
-        Data:
-          type: object
-          example: {
-            "fullname": "budi luhut",
-            "email": "budi@mail.com",
-            "gender": "male"
-              "weight": 60
-              "height": 170
-          }
-    Response_Failed_Register:
-      properties:
-        Meta:
-          type: object
-          example: {
-            "Message": "Data Berhasil",
-            "Status": "Success",
-            "Code": 200
-          }
-        Data:
-          type: object
-          example: {}
-  requestBodies:
-    Food:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Food'
-      description: Food object that needs to be added
-      required: true
-    UserArray:
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/User'
-      description: List of user object
-      required: true
   securitySchemes:
-    bearerAuth: # arbitrary name for the security scheme
+    bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
+tags:
+  - name: users
+  - name: foods
+  - name: histories
+  - name: histories_detail
+  - name: admin
+  - name: meal-plan
+  - name: open-api
+paths:
+  /api/v1/users/{id}:
+    get:
+      tags:
+        - users
+      summary: Get User By ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '31'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:08:35 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '467'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 31
+                  name: Name User Update
+                  email: nameuserupdate@mail.com
+                  password: $2a$04$9HB06U8uJtCX6rHT3VE.JeoTlp0PlS1SGVL8V9wGBbZPPWCZ8gwf.
+                  avatar_url: >-
+                    https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png
+                  gender: male
+                  personal_data_id: 31
+                  calories: 2900
+                  weight: 70
+                  height: 160
+                  createdAt: '2022-03-31T14:03:33.739003+07:00'
+                  updatedAt: '2022-03-31T14:06:57.74135+07:00'
+    put:
+      tags:
+        - users
+      summary: Update User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Name User Update
+                email: nameuserupdate@mail.com
+                password: secret
+                avatar_url: >-
+                  https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png
+                gender: male
+                personal_data:
+                  calories: 2900
+                  weight: 70
+                  height: 160
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '31'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:06:57 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '467'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 31
+                  name: Name User Update
+                  email: nameuserupdate@mail.com
+                  password: $2a$04$9HB06U8uJtCX6rHT3VE.JeoTlp0PlS1SGVL8V9wGBbZPPWCZ8gwf.
+                  avatar_url: >-
+                    https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png
+                  gender: male
+                  personal_data_id: 31
+                  calories: 2900
+                  weight: 70
+                  height: 160
+                  createdAt: '2022-03-31T14:03:33.739003+07:00'
+                  updatedAt: '2022-03-31T14:06:57.74135+07:00'
+    delete:
+      tags:
+        - users
+      summary: Delete User
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '30'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:08:09 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '71'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data: Delete User Success
+  /api/v1/users:
+    get:
+      tags:
+        - users
+      summary: Get All User
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:08:21 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  - id: 2
+                    name: adittt
+                    email: adit2@mail.com
+                    password: >-
+                      $2a$04$jLjYK3N9RqFEhuj4.iHrwuBV/LQ/xr4rvPS6GahzAQfqlePGz4AmS
+                    avatar_url: >-
+                      https://pbs.twimg.com/profile_images/883859744498176000/pjEHfbdn_400x400.jpg
+                    gender: female
+                    personal_data_id: 2
+                    calories: 2064.75
+                    weight: 60
+                    height: 170
+                    createdAt: '2022-03-22T14:16:04.190579+07:00'
+                    updatedAt: '2022-03-22T14:16:04.190579+07:00'
+                  - id: 4
+                    name: Regina Tiedemann
+                    email: regina@mail.com
+                    password: >-
+                      $2a$04$yYAdxeQA1w50HObBSJSmZe8Jt0ge8aC30YEQ/oyNF46sJobgS8LsC
+                    avatar_url: >-
+                      https://firebasestorage.googleapis.com/v0/b/fe-calories-tracker.appspot.com/o/avatar%2FRegina_1987.webp?alt=media&token=275c4544-efa9-4ee6-9e74-66b927b9cdc9
+                    gender: female
+                    personal_data_id: 4
+                    calories: 1827.38
+                    weight: 55
+                    height: 168
+                    createdAt: '2022-03-27T14:45:33.618289+07:00'
+                    updatedAt: '2022-03-27T14:45:33.618289+07:00'
+                  - id: 1
+                    name: test register
+                    email: testregist@mail.com
+                    password: >-
+                      $2a$04$vRl7XXtZbt/dbl0xmq5j.uUe2bSoBimG92TsnBwIJT3LtjwehZd4q
+                    avatar_url: >-
+                      https://firebasestorage.googleapis.com/v0/b/fe-calories-tracker.appspot.com/o/avatar%2Fimg_photo.svg?alt=media&token=cc72196d-f60c-4ba0-8d0c-51d9d12ab590
+                    gender: male
+                    personal_data_id: 1
+                    calories: 1775
+                    weight: 60
+                    height: 170
+                    createdAt: '2022-03-22T14:07:08.127745+07:00'
+                    updatedAt: '2022-03-27T14:57:46.520001+07:00'
+                  - id: 6
+                    name: jihyo
+                    email: jihyo@mail.com
+                    password: >-
+                      $2a$04$kQ8JIx/ECrTRxjcwrcmwXuKHRi3CGMjQWbec9y6XIX8xb6lPKzXAG
+                    avatar_url: >-
+                      https://firebasestorage.googleapis.com/v0/b/fe-calories-tracker.appspot.com/o/avatar%2Fuhdpaper.com-2381e-pc-hd.jpg?alt=media&token=f0947984-84b4-45e2-8127-816e99a275b4
+                    gender: female
+                    personal_data_id: 6
+                    calories: 2691
+                    weight: 60
+                    height: 170
+                    createdAt: '2022-03-27T15:01:38.91875+07:00'
+                    updatedAt: '2022-03-27T15:02:06.126545+07:00'
+                  - id: 31
+                    name: Name User Update
+                    email: nameuserupdate@mail.com
+                    password: >-
+                      $2a$04$9HB06U8uJtCX6rHT3VE.JeoTlp0PlS1SGVL8V9wGBbZPPWCZ8gwf.
+                    avatar_url: >-
+                      https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png
+                    gender: male
+                    personal_data_id: 31
+                    calories: 2900
+                    weight: 70
+                    height: 160
+                    createdAt: '2022-03-31T14:03:33.739003+07:00'
+                    updatedAt: '2022-03-31T14:06:57.74135+07:00'
+  /api/v1/users/register:
+    post:
+      tags:
+        - users
+      summary: Register User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Nama User
+                email: nameuser@mail.com
+                password: secret
+                avatar_url: >-
+                  https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png
+                gender: male
+                age: 25
+                activity_type: 1.5
+                personal_data:
+                  weight: 60
+                  height: 170
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:03:33 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '455'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 31
+                  name: Nama User
+                  email: nameuser@mail.com
+                  password: $2a$04$frAS01qETXImrf9yo.btYu3L0rf3gB3U.RQoej2jTZHpRNSBRcNjm
+                  avatar_url: >-
+                    https://www.kindpng.com/picc/m/252-2524695_dummy-profile-image-jpg-hd-png-download.png
+                  gender: male
+                  personal_data_id: 31
+                  calories: 1475
+                  weight: 60
+                  height: 170
+                  createdAt: '2022-03-31T14:03:33.739003+07:00'
+                  updatedAt: '2022-03-31T14:03:33.739003+07:00'
+  /api/v1/users/login:
+    post:
+      tags:
+        - users
+      summary: Login User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: nameuser@mail.com
+                password: secret
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:21:51 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '195'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwicm9sZSI6InVzZXIiLCJleHAiOjE2NDg3MTg1MTF9.sd9tUAL1Qyca04DEHlGBtqc2CX80FdL4TT5mNTzNl78
+  /api/v1/users/count-calories:
+    post:
+      tags:
+        - users
+      summary: Count Calories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                gender: female
+                age: 25
+                activity_type: 2
+                personal_data:
+                  calorie: 2600
+                  weight: 60
+                  height: 170
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:04:00 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '67'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  calories: 2753
+  /api/v1/foods:
+    get:
+      tags:
+        - foods
+      summary: Get All Food
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:11:10 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '1766'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  - id: 1
+                    title: Nasi Kuning
+                    img_url: ''
+                    calories: 147.75
+                    protein: 2.86
+                    carbs: 24.26
+                    fat: 4.35
+                    serving_size: 0
+                    created_at: '2022-03-22T14:18:44.450997+07:00'
+                    updatedAt: '2022-03-22T14:18:44.450997+07:00'
+                  - id: 2
+                    title: Nasi Goreng
+                    img_url: ''
+                    calories: 164.95
+                    protein: 7.33
+                    carbs: 21.24
+                    fat: 5.48
+                    serving_size: 0
+                    created_at: '2022-03-22T14:18:45.668639+07:00'
+                    updatedAt: '2022-03-22T14:18:45.668639+07:00'
+                  - id: 3
+                    title: Indonesian Nasi Goreng
+                    img_url: ''
+                    calories: 141.77
+                    protein: 5.6
+                    carbs: 21.22
+                    fat: 3.88
+                    serving_size: 0
+                    created_at: '2022-03-22T14:18:48.172788+07:00'
+                    updatedAt: '2022-03-22T14:18:48.172788+07:00'
+                  - id: 4
+                    title: Sausage Pizza
+                    img_url: >-
+                      https://www.edamam.com/food-img/7e4/7e4559e8b0dea671e0d0e7cd2fecbef5.jpg
+                    calories: 280
+                    protein: 11.5
+                    carbs: 30.62
+                    fat: 12.35
+                    serving_size: 0
+                    created_at: '2022-03-27T14:29:44.227286+07:00'
+                    updatedAt: '2022-03-27T14:29:44.227286+07:00'
+                  - id: 5
+                    title: Rendang
+                    img_url: ''
+                    calories: 147.19
+                    protein: 9.04
+                    carbs: 5.37
+                    fat: 10.43
+                    serving_size: 0
+                    created_at: '2022-03-27T14:29:57.493907+07:00'
+                    updatedAt: '2022-03-27T14:29:57.493907+07:00'
+                  - id: 6
+                    title: Cake Crumbs
+                    img_url: >-
+                      https://www.edamam.com/food-img/40f/40f08ab40c239b5944d6f369407dcfc6.jpg
+                    calories: 357
+                    protein: 5.4
+                    carbs: 57.2
+                    fat: 12.4
+                    serving_size: 0
+                    created_at: '2022-03-27T14:49:42.608661+07:00'
+                    updatedAt: '2022-03-27T14:49:42.608661+07:00'
+                  - id: 7
+                    title: Cheese Lasagna
+                    img_url: >-
+                      https://www.edamam.com/food-img/e6b/e6be67be9ab596ac7eeb1f9feb54999c.jpg
+                    calories: 145
+                    protein: 5.06
+                    carbs: 21.61
+                    fat: 4.22
+                    serving_size: 0
+                    created_at: '2022-03-27T14:50:14.177554+07:00'
+                    updatedAt: '2022-03-27T14:50:14.177554+07:00'
+    post:
+      tags:
+        - foods
+      summary: Save Food
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: Mie Ayam
+                img_url: mieayam.png
+                calories: 180
+                carbs: 160
+                fat: 170
+                protein: 160
+                serving_size: 10
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:10:38 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '265'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 201
+                  message: success
+                data:
+                  id: 8
+                  title: Mie Ayam
+                  img_url: mieayam.png
+                  calories: 180
+                  protein: 160
+                  carbs: 160
+                  fat: 170
+                  serving_size: 10
+                  created_at: '2022-03-31T14:10:38.729463+07:00'
+                  updatedAt: '2022-03-31T14:10:38.729463+07:00'
+  /api/v1/foods/{id}:
+    get:
+      tags:
+        - foods
+      summary: Get Food By ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '4'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:09:21 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '335'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 4
+                  title: Sausage Pizza
+                  img_url: >-
+                    https://www.edamam.com/food-img/7e4/7e4559e8b0dea671e0d0e7cd2fecbef5.jpg
+                  calories: 280
+                  protein: 11.5
+                  carbs: 30.62
+                  fat: 12.35
+                  serving_size: 0
+                  created_at: '2022-03-27T14:29:44.227286+07:00'
+                  updatedAt: '2022-03-27T14:29:44.227286+07:00'
+    delete:
+      tags:
+        - foods
+      summary: Delete Food
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '8'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:10:56 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '76'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data: Delete Food Successfully
+    put:
+      tags:
+        - foods
+      summary: Update Food
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: Sausage Pizza
+                img_url: >-
+                  https://www.edamam.com/food-img/7e4/7e4559e8b0dea671e0d0e7cd2fecbef5.jpg
+                calories: 280
+                protein: 11.5
+                carbs: 30.62
+                fat: 12.35
+                serving_size: 100
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '4'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:14:59 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '337'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 4
+                  title: Sausage Pizza
+                  img_url: >-
+                    https://www.edamam.com/food-img/7e4/7e4559e8b0dea671e0d0e7cd2fecbef5.jpg
+                  calories: 280
+                  protein: 11.5
+                  carbs: 30.62
+                  fat: 12.35
+                  serving_size: 100
+                  created_at: '2022-03-27T14:29:44.227286+07:00'
+                  updatedAt: '2022-03-31T14:14:59.595915+07:00'
+  /api/v1/foods/:
+    get:
+      tags:
+        - foods
+      summary: Get Food By Name
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+          example: Pizza
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:10:03 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '335'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 4
+                  title: Sausage Pizza
+                  img_url: >-
+                    https://www.edamam.com/food-img/7e4/7e4559e8b0dea671e0d0e7cd2fecbef5.jpg
+                  calories: 280
+                  protein: 11.5
+                  carbs: 30.62
+                  fat: 12.35
+                  serving_size: 0
+                  created_at: '2022-03-27T14:29:44.227286+07:00'
+                  updatedAt: '2022-03-27T14:29:44.227286+07:00'
+  /api/v1/histories:
+    post:
+      tags:
+        - histories
+      summary: Save Histories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                food_id: 3
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:28:34 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '261'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 201
+                  message: success
+                data:
+                  id: 4
+                  user_id: 4
+                  water: 0
+                  total_calories: 253.48000000000002
+                  total_food: 2
+                  date: 31-03-2022
+                  created_at: '0001-01-01T00:00:00Z'
+                  updated_at: '2022-03-31T14:28:34.7362861+07:00'
+                  histories_details: null
+  /api/v1/histories/automatic:
+    post:
+      tags:
+        - histories
+      summary: Save Histories From Open API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: Prawn Nasi Goreng
+                img_url: ''
+                calories: 111.71157197465415
+                protein: 5.815716578162532
+                carbs: 13.25713752741727
+                fat: 3.8978542496191078
+                serving_size: 0
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:24:48 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '276'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 201
+                  message: success
+                data:
+                  id: 4
+                  user_id: 4
+                  fullname: ''
+                  water: 0
+                  total_calories: 111.71
+                  total_food: 1
+                  date: 31-03-2022
+                  created_at: '2022-03-31T14:24:48.8509089+07:00'
+                  updated_at: '2022-03-31T14:24:48.8509089+07:00'
+                  histories_details: null
+  /api/v1/histories/water:
+    post:
+      tags:
+        - histories
+      summary: Save/Update Water
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                water: 6
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:27:52 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '231'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 4
+                  user_id: 4
+                  water: 6
+                  total_calories: 0
+                  total_food: 0
+                  date: 31-03-2022
+                  created_at: '0001-01-01T00:00:00Z'
+                  updated_at: '0001-01-01T00:00:00Z'
+                  histories_details: null
+  /api/v1/histories/last:
+    get:
+      tags:
+        - histories
+      summary: Get Last History
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:21:59 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 3
+                  user_id: 4
+                  fullname: Regina Tiedemann
+                  water: 7
+                  total_calories: 814.14
+                  total_food: 4
+                  date: 27-03-2022
+                  created_at: '0001-01-01T07:00:00+07:00'
+                  updated_at: '2022-03-27T14:50:14.181459+07:00'
+                  histories_details:
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 7
+                      historiesID: 3
+                      foodID: 5
+                      food:
+                        CreatedAt: '2022-03-27T14:29:57.493907+07:00'
+                        UpdatedAt: '2022-03-27T14:29:57.493907+07:00'
+                        DeletedAt: null
+                        ID: 5
+                        title: Rendang
+                        calories: 147.19
+                        fat: 10.43
+                        carbs: 5.37
+                        protein: 9.04
+                      createdAt: '2022-03-27T14:46:53.073453+07:00'
+                      updatedAt: '2022-03-27T14:46:53.073453+07:00'
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 9
+                      historiesID: 3
+                      foodID: 2
+                      food:
+                        CreatedAt: '2022-03-22T14:18:45.668639+07:00'
+                        UpdatedAt: '2022-03-22T14:18:45.668639+07:00'
+                        DeletedAt: null
+                        ID: 2
+                        title: Nasi Goreng
+                        calories: 164.95
+                        fat: 5.48
+                        carbs: 21.24
+                        protein: 7.33
+                      createdAt: '2022-03-27T14:47:03.505712+07:00'
+                      updatedAt: '2022-03-27T14:47:03.505712+07:00'
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 11
+                      historiesID: 3
+                      foodID: 6
+                      food:
+                        CreatedAt: '2022-03-27T14:49:42.608661+07:00'
+                        UpdatedAt: '2022-03-27T14:49:42.608661+07:00'
+                        DeletedAt: null
+                        ID: 6
+                        title: Cake Crumbs
+                        imgURL: >-
+                          https://www.edamam.com/food-img/40f/40f08ab40c239b5944d6f369407dcfc6.jpg
+                        calories: 357
+                        fat: 12.4
+                        carbs: 57.2
+                        protein: 5.4
+                      createdAt: '2022-03-27T14:49:42.618363+07:00'
+                      updatedAt: '2022-03-27T14:49:42.618363+07:00'
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 12
+                      historiesID: 3
+                      foodID: 7
+                      food:
+                        CreatedAt: '2022-03-27T14:50:14.177554+07:00'
+                        UpdatedAt: '2022-03-27T14:50:14.177554+07:00'
+                        DeletedAt: null
+                        ID: 7
+                        title: Cheese Lasagna
+                        imgURL: >-
+                          https://www.edamam.com/food-img/e6b/e6be67be9ab596ac7eeb1f9feb54999c.jpg
+                        calories: 145
+                        fat: 4.22
+                        carbs: 21.61
+                        protein: 5.06
+                      createdAt: '2022-03-27T14:50:14.189112+07:00'
+                      updatedAt: '2022-03-27T14:50:14.189112+07:00'
+  /api/v1/histories/list:
+    get:
+      tags:
+        - histories
+      summary: Get All History
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:22:06 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  - id: 3
+                    user_id: 4
+                    fullname: Regina Tiedemann
+                    water: 7
+                    total_calories: 814.14
+                    total_food: 4
+                    date: 27-03-2022
+                    created_at: '0001-01-01T07:00:00+07:00'
+                    updated_at: '2022-03-27T14:50:14.181459+07:00'
+                    histories_details:
+                      - CreatedAt: '0001-01-01T00:00:00Z'
+                        UpdatedAt: '0001-01-01T00:00:00Z'
+                        DeletedAt: null
+                        ID: 7
+                        historiesID: 3
+                        foodID: 5
+                        food:
+                          CreatedAt: '2022-03-27T14:29:57.493907+07:00'
+                          UpdatedAt: '2022-03-27T14:29:57.493907+07:00'
+                          DeletedAt: null
+                          ID: 5
+                          title: Rendang
+                          calories: 147.19
+                          fat: 10.43
+                          carbs: 5.37
+                          protein: 9.04
+                        createdAt: '2022-03-27T14:46:53.073453+07:00'
+                        updatedAt: '2022-03-27T14:46:53.073453+07:00'
+                      - CreatedAt: '0001-01-01T00:00:00Z'
+                        UpdatedAt: '0001-01-01T00:00:00Z'
+                        DeletedAt: null
+                        ID: 9
+                        historiesID: 3
+                        foodID: 2
+                        food:
+                          CreatedAt: '2022-03-22T14:18:45.668639+07:00'
+                          UpdatedAt: '2022-03-22T14:18:45.668639+07:00'
+                          DeletedAt: null
+                          ID: 2
+                          title: Nasi Goreng
+                          calories: 164.95
+                          fat: 5.48
+                          carbs: 21.24
+                          protein: 7.33
+                        createdAt: '2022-03-27T14:47:03.505712+07:00'
+                        updatedAt: '2022-03-27T14:47:03.505712+07:00'
+                      - CreatedAt: '0001-01-01T00:00:00Z'
+                        UpdatedAt: '0001-01-01T00:00:00Z'
+                        DeletedAt: null
+                        ID: 11
+                        historiesID: 3
+                        foodID: 6
+                        food:
+                          CreatedAt: '2022-03-27T14:49:42.608661+07:00'
+                          UpdatedAt: '2022-03-27T14:49:42.608661+07:00'
+                          DeletedAt: null
+                          ID: 6
+                          title: Cake Crumbs
+                          imgURL: >-
+                            https://www.edamam.com/food-img/40f/40f08ab40c239b5944d6f369407dcfc6.jpg
+                          calories: 357
+                          fat: 12.4
+                          carbs: 57.2
+                          protein: 5.4
+                        createdAt: '2022-03-27T14:49:42.618363+07:00'
+                        updatedAt: '2022-03-27T14:49:42.618363+07:00'
+                      - CreatedAt: '0001-01-01T00:00:00Z'
+                        UpdatedAt: '0001-01-01T00:00:00Z'
+                        DeletedAt: null
+                        ID: 12
+                        historiesID: 3
+                        foodID: 7
+                        food:
+                          CreatedAt: '2022-03-27T14:50:14.177554+07:00'
+                          UpdatedAt: '2022-03-27T14:50:14.177554+07:00'
+                          DeletedAt: null
+                          ID: 7
+                          title: Cheese Lasagna
+                          imgURL: >-
+                            https://www.edamam.com/food-img/e6b/e6be67be9ab596ac7eeb1f9feb54999c.jpg
+                          calories: 145
+                          fat: 4.22
+                          carbs: 21.61
+                          protein: 5.06
+                        createdAt: '2022-03-27T14:50:14.189112+07:00'
+                        updatedAt: '2022-03-27T14:50:14.189112+07:00'
+  /api/v1/histories/{id}:
+    get:
+      tags:
+        - histories
+      summary: Get  History By ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '3'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:22:51 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 3
+                  user_id: 4
+                  fullname: Regina Tiedemann
+                  water: 7
+                  total_calories: 814.14
+                  total_food: 4
+                  date: 27-03-2022
+                  created_at: '0001-01-01T07:00:00+07:00'
+                  updated_at: '2022-03-27T14:50:14.181459+07:00'
+                  histories_details:
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 7
+                      historiesID: 3
+                      foodID: 5
+                      food:
+                        CreatedAt: '2022-03-27T14:29:57.493907+07:00'
+                        UpdatedAt: '2022-03-27T14:29:57.493907+07:00'
+                        DeletedAt: null
+                        ID: 5
+                        title: Rendang
+                        calories: 147.19
+                        fat: 10.43
+                        carbs: 5.37
+                        protein: 9.04
+                      createdAt: '2022-03-27T14:46:53.073453+07:00'
+                      updatedAt: '2022-03-27T14:46:53.073453+07:00'
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 9
+                      historiesID: 3
+                      foodID: 2
+                      food:
+                        CreatedAt: '2022-03-22T14:18:45.668639+07:00'
+                        UpdatedAt: '2022-03-22T14:18:45.668639+07:00'
+                        DeletedAt: null
+                        ID: 2
+                        title: Nasi Goreng
+                        calories: 164.95
+                        fat: 5.48
+                        carbs: 21.24
+                        protein: 7.33
+                      createdAt: '2022-03-27T14:47:03.505712+07:00'
+                      updatedAt: '2022-03-27T14:47:03.505712+07:00'
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 11
+                      historiesID: 3
+                      foodID: 6
+                      food:
+                        CreatedAt: '2022-03-27T14:49:42.608661+07:00'
+                        UpdatedAt: '2022-03-27T14:49:42.608661+07:00'
+                        DeletedAt: null
+                        ID: 6
+                        title: Cake Crumbs
+                        imgURL: >-
+                          https://www.edamam.com/food-img/40f/40f08ab40c239b5944d6f369407dcfc6.jpg
+                        calories: 357
+                        fat: 12.4
+                        carbs: 57.2
+                        protein: 5.4
+                      createdAt: '2022-03-27T14:49:42.618363+07:00'
+                      updatedAt: '2022-03-27T14:49:42.618363+07:00'
+                    - CreatedAt: '0001-01-01T00:00:00Z'
+                      UpdatedAt: '0001-01-01T00:00:00Z'
+                      DeletedAt: null
+                      ID: 12
+                      historiesID: 3
+                      foodID: 7
+                      food:
+                        CreatedAt: '2022-03-27T14:50:14.177554+07:00'
+                        UpdatedAt: '2022-03-27T14:50:14.177554+07:00'
+                        DeletedAt: null
+                        ID: 7
+                        title: Cheese Lasagna
+                        imgURL: >-
+                          https://www.edamam.com/food-img/e6b/e6be67be9ab596ac7eeb1f9feb54999c.jpg
+                        calories: 145
+                        fat: 4.22
+                        carbs: 21.61
+                        protein: 5.06
+                      createdAt: '2022-03-27T14:50:14.189112+07:00'
+                      updatedAt: '2022-03-27T14:50:14.189112+07:00'
+    delete:
+      tags:
+        - histories
+      summary: Delete Histories Detail
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '3'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:39:30 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '59'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data: Success
+  /api/v1/histories_detail/{id}:
+    delete:
+      tags:
+        - histories_detail
+      summary: Delete Histories Detail
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '4'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:40:01 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '272'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  id: 4
+                  food_id: 4
+                  FoodTitle: ''
+                  FoodImage: ''
+                  FoodCalories: 0
+                  FoodCrabs: 0
+                  FoodProtein: 0
+                  FoodFat: 0
+                  histories_id: 2
+                  created_at: '2022-03-27T14:29:44.273418+07:00'
+                  updated_at: '2022-03-27T14:29:44.273418+07:00'
+  /api/v1/histories_detail/all/{id}:
+    get:
+      tags:
+        - histories_detail
+      summary: Get Histories Detail By ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:40:22 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '559'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  - id: 1
+                    histories_id: 1
+                    food_id: 1
+                    food_name: Nasi Kuning
+                    food_image: ''
+                    food_calories: 147.75
+                    food_carbs: 24.26
+                    food_protein: 2.86
+                    food_fat: 4.35
+                    created_at: '2022-03-22T14:18:44.463188+07:00'
+                    updated_at: '2022-03-22T14:18:44.463188+07:00'
+                  - id: 2
+                    histories_id: 1
+                    food_id: 2
+                    food_name: Nasi Goreng
+                    food_image: ''
+                    food_calories: 164.95
+                    food_carbs: 21.24
+                    food_protein: 7.33
+                    food_fat: 5.48
+                    created_at: '2022-03-22T14:18:45.677801+07:00'
+                    updated_at: '2022-03-22T14:18:45.677801+07:00'
+  /api/v1/admin/login:
+    post:
+      tags:
+        - admin
+      summary: Login Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: admin1
+                password: admin1
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:08:00 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '197'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  token: >-
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwicm9sZSI6ImFkbWluIiwiZXhwIjoxNjQ4NzE3NjgwfQ.y5HTXm18aihI_h3NF-PNlvjR92FgY9UcxpftTYSQTzk
+  /api/v1/admin/register:
+    post:
+      tags:
+        - admin
+      summary: Register Admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: admin1
+                password: admin1
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:07:53 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '252'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 201
+                  message: success
+                data:
+                  id: 8
+                  username: newadmin
+                  password: $2a$04$lCoomqygTn6TOvn2g.aA0ujKPhCNdJ2lNRDPfrz9fY9YeHBQbIioq
+                  created_at: '2022-03-31T14:07:53.4306393+07:00'
+                  updated_at: '2022-03-31T14:07:53.4306393+07:00'
+  /api/v1/meal-plan/last:
+    get:
+      tags:
+        - meal-plan
+      summary: Get Last Meal Plan
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:29:41 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                user_id: 4
+                dietary_preferences: balanced
+                plan_type: '7'
+                range_calories: 400-600
+                meal_plans: >-
+                  {"lunch":[{"recipeLabel":"An Ideal Lunch Salad
+                  recipes","recipeImageURL":"https://www.edamam.com/web-img/be9/be98aafdbc8aa7e3901405890eb46316","recipeURL":"http://www.101cookbooks.com/archives/an-ideal-lunch-salad-recipe.html","recipeCalories":1673.1140569281772,"recipeIngredients":["3
+                  celery stalks, very thinly sliced","1 cup chickpeas
+                  (equivalent 14-ounce can), drained/rinsed","3 handfuls arugula
+                  or shredded romaine lettuce","1/3 cup toasted pepitas or
+                  almonds","15 black olives, chopped","1/2 small red onion,
+                  finely diced","1 small head of broccoli florets, blanched","1
+                  medium clove garlic, smashed","1 tablespoon white miso","1
+                  tablespoon mirin","1 tablespoon brown rice vinegar","big pinch
+                  of ground cumin","1/3 cup / 80 ml plain yogurt","1-2
+                  tablespoons heavy cream, or to taste","1 small ripe avocado,
+                  sliced"]},{"recipeLabel":"Ploughman's Lunch
+                  Box","recipeImageURL":"https://www.edamam.com/web-img/008/0083f74e385c811bf44823b11008d44a.jpg","recipeURL":"http://www.myrecipes.com/recipe/ploughmans-lunch-box","recipeCalories":591.6024027435626,"recipeIngredients":["3
+                  tablespoons Spiced Apple Chutney","2 tablespoons Marcona
+                  almonds","1/2 cup seedless red or green grapes","1 ounce
+                  thinly sliced whole-wheat baguette, toasted or grilled","3/4
+                  ounce soppressata, thinly sliced","1 ounce aged Gruyère
+                  cheese, thinly sliced","4 radishes (such as red and
+                  watermelon)"]},{"recipeLabel":"Egg Salad Bento
+                  Lunch","recipeImageURL":"https://www.edamam.com/web-img/16c/16cdb625b89cf7deeb591c908d1110e0.jpg","recipeURL":"http://www.eatingwell.com/recipes/egg_salad_bento_lunch.html","recipeCalories":534.7684763312543,"recipeIngredients":["1
+                  tablespoon bittersweet chocolate chips","1 tablespoon low-fat
+                  mayonnaise","2/3 cup broccoli florets, cooked or raw","6
+                  cherry tomatoes","2 tablespoons finely diced celery","2
+                  hard-boiled eggs, (see Tip), peeled and chopped","1/2 cup
+                  banana slices","2 teaspoons Dijon mustard","2 leaves Boston or
+                  Bibb lettuce","Freshly ground pepper, to taste","2 tablespoons
+                  nonfat or low-fat vanilla yogurt","1 teaspoon minced scallion
+                  greens","1/2 cup blueberries","1 tablespoon shelled unsalted
+                  pistachios","3 slices cocktail-size pumpernickel
+                  bread"]},{"recipeLabel":"No-Cook Lunch Idea: Cheese, Crackers,
+                  Fruit, and
+                  Egg","recipeImageURL":"https://www.edamam.com/web-img/92b/92be3175c7d048ee5b67ff57684ded8e.jpg","recipeURL":"https://www.self.com/recipe/no-cook-lunch-idea-cheese-crackers-fruit-and-egg","recipeCalories":490.78953194375003,"recipeIngredients":["*
+                  1 medium apple","* Squeeze of lemon juice","* 10 shredded
+                  wheat crackers","* 1cup cherry tomatoes, halved","* 2
+                  hard-boiled eggs, halved (store-bought or made ahead of
+                  time)","* 1/2 ounce cheddar, sliced"]},{"recipeLabel":"Panko
+                  Chicken Bento Box
+                  Lunch","recipeImageURL":"https://www.edamam.com/web-img/ab8/ab8d603c8067b39cb637ac7576cbea9d.jpg","recipeURL":"http://www.myrecipes.com/recipe/panko-chicken-bento-box-lunch","recipeCalories":2095.1947500083697,"recipeIngredients":["1/2
+                  cup flour","1/2 teaspoon kosher salt, divided","1/4 teaspoon
+                  freshly ground pepper","2 large eggs, lightly beaten","1 cup
+                  panko (Japanese-style bread crumbs)","2 boned, skinned chicken
+                  breast halves (1.4 lbs. total), sliced crosswise 1 in. wide,
+                  then again to make 1-in.-wide \"tenders\"","1/4 cup canola or
+                  other vegetable oil, divided","3/4 cup sushi rice","2 sheets
+                  (each about 7 in. by 8 in.) toasted nori, each cut crosswise
+                  into 1-in. strips","1/2 cup ketchup","1 tablespoon soy
+                  sauce","1 to 2 tsp. grated fresh ginger","2 small garlic
+                  cloves, grated","1 to 1 1/2 cups sugar snap peas, strings
+                  removed"]},{"recipeLabel":"Make-Ahead Mustardy Quinoa With
+                  Sausage, Potato, and Tarragon
+                  Recipe","recipeImageURL":"https://www.edamam.com/web-img/8a2/8a24e7bfe943dd690f395d5fe958bb6f.jpg","recipeURL":"http://www.seriouseats.com/recipes/2013/07/make-ahead-mustard-quinoa-sausage-potato-tarragon-recipe.html","recipeCalories":971.2774852995764,"recipeIngredients":["1/2
+                  cup black or regular quinoa","1 pound purple or white
+                  potatoes, peeled, cut into 1/2-inch dice","Kosher salt","1
+                  large spicy or sweet pork sausage, removed from casings and
+                  crumbled","2 tablespoons extra-virgin olive oil","1 1/2
+                  tablespoons whole-grain mustard","1 1/2 tablespoons minced
+                  fresh tarragon","2 cups arugula"]},{"recipeLabel":"Feta &
+                  peach
+                  couscous","recipeImageURL":"https://www.edamam.com/web-img/fc7/fc7215014fbb72a2e839a4bdeb960b11.jpg","recipeURL":"https://www.bbcgoodfood.com/recipes/feta-peach-couscous","recipeCalories":1154.905,"recipeIngredients":["3
+                  ripe peaches","35g mixed seeds","150g vegetarian feta","1 x
+                  100g pack lemon & garlic
+                  couscous"]}],"dinner":[{"recipeLabel":"Dinner Tonight: Tadka
+                  Dal","recipeImageURL":"https://www.edamam.com/web-img/663/663ef287815b43584e9b7d14c3dcd03b.jpg","recipeURL":"http://www.seriouseats.com/recipes/2009/04/dinner-tonight-tadka-dal-recipe.html","recipeCalories":2202.9070000000006,"recipeIngredients":["1
+                  2-inch piece ginger, peeled, sliced","6 cloves garlic,
+                  crushed","1/2 cup ghee","2 yellow onions, thinly sliced","1/2
+                  teaspoon cayenne pepper","1 tablespoon ground coriander","2
+                  teaspoons ground cumin","2 teaspoons turmeric","1 1/2 cups
+                  masoor dal (hulled red lentils)","Salt","2 teaspoons black
+                  mustard seeds","1 teaspoon cumin seeds","2 Thai green chilies,
+                  stemmed and sliced"]},{"recipeLabel":"Dinner Tonight:
+                  Quesadillas With
+                  Mushrooms","recipeImageURL":"https://www.edamam.com/web-img/1ce/1cea1818c77a9ed873136c8790933e5e.jpg","recipeURL":"http://www.seriouseats.com/recipes/2008/09/quesadillas-with-mushrooms-recipe.html","recipeCalories":936.441511625,"recipeIngredients":["1
+                  cup tortilla masa harina","3/4 cup warm water","5 ounces
+                  Oaxaca cheese, shredded","1 poblano chile, stem removed, and
+                  sliced thinly","Salt"]},{"recipeLabel":"Mini Shrimp
+                  Rolls","recipeImageURL":"https://www.edamam.com/web-img/5bf/5bfebd85e45e51dcc45a9af115f2487a.jpg","recipeURL":"https://www.epicurious.com/recipes/food/views/mini-shrimp-rolls-51117280","recipeCalories":3463.4226810361934,"recipeIngredients":["Kosher
+                  salt","1 pound medium shrimp, shelled, deveined","1/4 cup plus
+                  1 tablespoons mayonnaise","1 small celery stalk, peeled,
+                  finely chopped (about 3 tablespoons)","1 tablespoon finely
+                  chopped fresh chives","1 tablespoon grapeseed oil","2
+                  teaspoons fresh lemon juice","2 teaspoons prepared
+                  horseradish","Freshly ground black pepper","24 mini soft
+                  dinner rolls (each about 1 1/2 x 1 1/2\"; such as Martin's
+                  potato rolls or King's Hawaiian)","1/4 cup (1/2 stick)
+                  unsalted butter, melted","1/2 cup celery leaves or crushed
+                  potato chips"]},{"recipeLabel":"Mini Shrimp
+                  Rolls","recipeImageURL":"https://www.edamam.com/web-img/7d9/7d9346e142b88e1247bdc5d9a244e4a8.jpg","recipeURL":"http://www.bonappetit.com/recipes/2012/10/mini-shrimp-rolls","recipeCalories":3459.828420202801,"recipeIngredients":["Kosher
+                  salt","1 pound medium shrimp, shelled, deveined","1/4 cup plus
+                  1 tablespoon mayonnaise","1 small celery stalk, peeled, finely
+                  chopped (about 3 tablespoons)","1 tablespoon finely chopped
+                  fresh chives","1 tablespoon grapeseed oil","1 teaspoon fresh
+                  lemon juice","1 teaspoon prepared horseradish","Freshly ground
+                  black pepper","24 mini soft dinner rolls (each about 1 1/2 x 1
+                  1/2-inch; such as Martin's potato rolls or King's
+                  Hawaiian)","1/4 cup (1/2 stick) unsalted butter, melted","1/2
+                  cup celery leaves or crushed potato
+                  chips"]},{"recipeLabel":"Italian Sausage and Pasta
+                  Dinner","recipeImageURL":"https://www.edamam.com/web-img/4d2/4d234dd941a9f937514aebec7ad965e2.jpeg","recipeURL":"https://www.foodnetwork.com/recipes/italian-sausage-and-pasta-dinner-3416494","recipeCalories":3343.120358128125,"recipeIngredients":["1
+                  package (16 ounce) penne pasta","1 package (13.5 ounce)
+                  Johnsonville® Three-Cheese Italian Style Sausage, sliced","1
+                  tablespoon olive oil","1 medium green pepper, julienned and
+                  cut in half","1 medium sweet red bell pepper, julienned and
+                  cut in half","1 medium onion, halved and sliced","1 clove
+                  garlic, minced","1 jar (24 ounces) marinara sauce,
+                  heated"]},{"recipeLabel":"Dinner Tonight: Chana
+                  Masala","recipeImageURL":"https://www.edamam.com/web-img/a9b/a9b027b6c91d18f1c55ac87c0f133e37.jpg","recipeURL":"http://www.seriouseats.com/recipes/2010/02/dinner-tonight-madhur-jaffrey-chana-masala-vegetarian-curry-recipe.html","recipeCalories":1702.8391143125,"recipeIngredients":["2
+                  tablespoons neutral oil, such as canola","2 medium onions,
+                  minced","1 clove garlic, minced","2 teaspoons grated fresh
+                  ginger","1 fresh, hot green chili pepper, de-seeded and
+                  minced","1 tablespoon ground coriander","3 teaspoons ground
+                  cumin or 4 teaspoons cumin seeds, toasted and ground","1
+                  teaspoon ground turmeric","2 teaspoons paprika","1 teaspoon
+                  garam masala","2 cups tomatoes or or 1 15-ounce can of whole
+                  tomatoes, chopped","2/3 cup water","2 fifteen-ounce cans
+                  chickpeas, drained and rinsed","1/2 teaspoon salt","Juice of 1
+                  lemon"]},{"recipeLabel":"Dinner Tonight: Caldo
+                  Gallego","recipeImageURL":"https://www.edamam.com/web-img/4b9/4b9dd70396aeca563acf019047a065bc.jpg","recipeURL":"http://www.seriouseats.com/recipes/2008/10/caldo-gallego-spanish-vegetable-chorizo-soup-recipe.html","recipeCalories":1900.6145348750003,"recipeIngredients":["1/4
+                  pound thickly sliced pancetta or slab bacon, cut into 1/4-inch
+                  dice","1 14-ounce can white beans, drained and rinsed","1
+                  medium onion, cut into 1/2-inch dice","1 large baking potato,
+                  peeled and cut into 1/2-inch dice","1 large turnip, peeled and
+                  cut into 1/2-inch dice","1/4 pound Spanish chorizo, casings
+                  removed and sliced 1/4 inch thick","1/2 pound turnip greens
+                  (or other dark leafy green, such as kale or spinach), stemmed
+                  and coarsely
+                  chopped"]}],"breakfast":[{"recipeLabel":"Breakfast Fried
+                  Rice","recipeImageURL":"https://www.edamam.com/web-img/96a/96a2c1573c7f08dc61f6079fb03e1693.jpg","recipeURL":"https://www.realsimple.com/food-recipes/browse-all-recipes/breakfast-fried-rice","recipeCalories":1032.733486,"recipeIngredients":["1/2
+                  yellow onion, finely chopped","2 cloves garlic, minced","1
+                  tablespoon olive oil","4 small breakfast sausages","2 cup
+                  cooked rice","2 tablespoons soy sauce","1 teaspoon rice
+                  vinegar","1 teaspoon toasted sesame oil","1 teaspoon
+                  sriracha","3 eggs","3 tablespoons scallions","Salt and
+                  pepper"]},{"recipeLabel":"Muesli Breakfast Cereal
+                  recipes","recipeImageURL":"https://www.edamam.com/web-img/025/025aee8357c761569ac45093dec1eeec","recipeURL":"http://www.marthastewart.com/314764/muesli-breakfast-cereal","recipeCalories":818.0609999991823,"recipeIngredients":["1
+                  cup old-fashioned rolled oats","3/4 cup milk","1 tablespoon
+                  sugar","1/4 cup walnuts, chopped","1 Bartlett pear, cored and
+                  cut into 1/4-inch dice","1/2 cup seedless red grapes, halved
+                  or quartered lengthwise"]},{"recipeLabel":"German Farmer's
+                  Breakfast","recipeImageURL":"https://www.edamam.com/web-img/1ce/1ce2bde7f86962ba55f03f298f761da4.jpg","recipeURL":"http://simplyrecipes.com/recipes/german_farmers_breakfast/","recipeCalories":2283.628999976524,"recipeIngredients":["3
+                  large potatoes, skinned and quartered lengthwise","3 Tbsp
+                  bacon fat or olive oil","2 cups roughly chopped green and
+                  white onions (include the greens from the green onions)","2
+                  cups roughly chopped bell peppers","Salt to taste","1-2 cups
+                  chopped ham","1/4 cup chopped parsley","4 eggs,
+                  whisked"]},{"recipeLabel":"Turkish
+                  Breakfast","recipeImageURL":"https://www.edamam.com/web-img/145/1452143d29b2889e9ad4b8380b21a43d.jpg","recipeURL":"https://food52.com/recipes/61259-turkish-breakfast","recipeCalories":1111.9502437212095,"recipeIngredients":["12
+                  ounces thick plain yogurt, such as Siggi's, Old Chatham
+                  Sheepherding Company, or Fage","1 tablespoon well-blended
+                  tahini","1 tablespoon date molasses (silan)","2 tablespoons
+                  coarsely chopped walnuts","2 tablespoons coarsely chopped
+                  pistachios","1 tablespoon sunflower seeds","1 tablespoon
+                  toasted sesame seeds","1 tablespoon flax seeds","2 ounces (2
+                  to 4) dried figs, cut into eighths","2 ounces (6 to 8) dried
+                  apricots, cut into strips","2 ounces (about 2 or 3
+                  tablespoons) dried cranberries","1 teaspoon dried mint","1
+                  pinch Turkish dried crushed chile, Aleppo pepper, urfa biber,
+                  or isot (optional)"]},{"recipeLabel":"Potato Hash with Sausage
+                  & Fried
+                  Egg","recipeImageURL":"https://www.edamam.com/web-img/b03/b03ae715128306276e1ac1c234ed1f8b","recipeURL":"http://www.eatingwell.com/recipe/279142/potato-hash-with-sausage-fried-egg/","recipeCalories":566.665,"recipeIngredients":["3
+                  teaspoons olive oil, divided","¼ cup chopped green bell
+                  pepper","2 cups shredded green cabbage or coleslaw mix","1
+                  turkey breakfast sausage link (2 oz.), casing removed,
+                  crumbled","1 ¼ cups roasted potatoes, onions, and peppers (see
+                  Associated Recipes)","1 large egg"]},{"recipeLabel":"Jersey
+                  Cakes","recipeImageURL":"https://www.edamam.com/web-img/764/76433bc1f33d255ba826bea4e5a372a4.jpg","recipeURL":"https://www.epicurious.com/recipes/food/views/jersey-cakes","recipeCalories":3382.213000007076,"recipeIngredients":["4
+                  strips cherrywood-smoked bacon (or any good-quality bacon)","4
+                  thin slices pork roll, Taylor brand preferred","2 links
+                  breakfast sausage","2 large eggs","1 pint buttermilk","1/4 cup
+                  vegetable oil","1 tablespoon granulated sugar","1/2 teaspoon
+                  salt","2 cups all-purpose flour","1 teaspoon baking
+                  soda","Scant 1 tablespoon baking powder","Butter, for cooking
+                  and serving","Maple syrup, for
+                  serving"]},{"recipeLabel":"Breakfast Rice Cakes with Chinese
+                  Sausage
+                  recipes","recipeImageURL":"https://www.edamam.com/web-img/dc2/dc2222e31817d3a6662879d1cfeea969","recipeURL":"http://www.chowhound.com/recipes/breakfast-rice-cakes-with-chinese-sausage-10990","recipeCalories":1636.3980000028284,"recipeIngredients":["1
+                  cup short-grain rice","1 1/4 cups water","2 teaspoons kosher
+                  salt, plus more for seasoning the eggs","2 tablespoons
+                  mirin","2 tablespoons rice vinegar","2 teaspoons white sesame
+                  seeds","2 teaspoons black sesame seeds","2 tablespoons peanut
+                  oil, plus extra for oiling the plate","4 lop chong (Chinese
+                  dried) sausages, cut on the bias into 1/2-inch-thick slices
+                  (about 6 ounces total)","4 large eggs","2 scallions, thinly
+                  sliced on the bias"]}]}
+  /api/v1/meal-plan:
+    post:
+      tags:
+        - meal-plan
+      summary: Save Meal Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                dietary_preferences: balanced
+                plan_type: '7'
+                range_calories: 400-600
+                meal_plans: >-
+                  {"lunch":[{"recipeLabel":"An Ideal Lunch Salad
+                  recipes","recipeImageURL":"https://edamam-product-images.s3.amazonaws.com/web-img/be9/be98aafdbc8aa7e3901405890eb46316?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIAqugKMMZQ10Nz8kCwCvdQ2wRF0HBtG2W21uEuOTHG8wAiEAjnIXDyXCVRVvV%2FuKLDHM23zMq3%2BRRGZaID7RHSXVVUIq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDNAznqmqV%2FKjVHRBHirXA3rzIMmBM9aub4YAfg0xReHEJc1zSZjeqXTfYTbqMg3yiiVD86CJQjJIGfm2mh8oIcMpt3h%2FQZ8QmLGm4zulpV44WMbDXG7Gr97hdmC61IryF7Dq8teG4nb6SX5kESmQQRU4eeNzwB0G5Nzobudtv5au92AvBw5tLSswj%2BOj75iNSwFmG9WJraOCgg8wJMyHpb87eFQ2o9Gna14iquDDIQTzABuY%2FP4kIqjWwfN4eYAsfxyLhhe3CjPn0Dx%2B%2Fq1rWG0FcSoMmwItdNjMzc%2BuAjELrW7Lafd15JBSYQSq6Vtb8TjRPjEJSWZUqn%2BgxmYNw%2B1sE51XXNKznH1ZmVMeIsnpif8TDMDdAWxbENp8b3STx4A9W5nPIP00RViJCETOJbN%2BRKHLOmWIKmj97tliPugA4bU%2BPW0g2XcjY2b08z863VyQmWueOWV2hXuZPmK8i21DsOQp0N1%2BOF6QJHmpGuDOCpqe8DXyZ4cnWrJAUIHYDbx1S0Wvy91hh1SZkjim5REg6Z97gEwchJ21vgWeRKH2m6a6ndy5g%2FoGLr2XuXATp53TJ26eLUKGnQV%2BEBAQakZm6fCLLSL4RxPNxN6SB7KZmUlFChmgUsr8qQh35ndgwCjYIE7D7DD%2Fo5WSBjqlAZ7%2FwZVYJPdhVeRtIReb8ZzpO2bIh%2BRW2%2Fq%2B7UJZaqoPntff7oUfhT6RO5rMCQJXFjUHbg9pEpNro022J6E41DqmC2YXWWwVBTnM8YqPIgvDyC%2BFRrCVPo8hcgqwbIkDXkCS14xCRPNK8Ph%2BlI%2BT1nKWfYbs2ouw6TwPQ8i6K4CPzbkMCGUHVHrlMFIJh81tGtk%2BhPI%2FUXkWDxmTSFJX5s8Y41rtMA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074510Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3599&X-Amz-Credential=ASIASXCYXIIFLS6NCMJZ%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=2ddf9f4621f5e2fa219f36edaf143bb96b631915f85da4cd8ccf84f7f5856f58","recipeURL":"http://www.101cookbooks.com/archives/an-ideal-lunch-salad-recipe.html","recipeCalories":1673.1140569281772,"recipeIngredients":["3
+                  celery stalks, very thinly sliced","1 cup chickpeas
+                  (equivalent 14-ounce can), drained/rinsed","3 handfuls arugula
+                  or shredded romaine lettuce","1/3 cup toasted pepitas or
+                  almonds","15 black olives, chopped","1/2 small red onion,
+                  finely diced","1 small head of broccoli florets, blanched","1
+                  medium clove garlic, smashed","1 tablespoon white miso","1
+                  tablespoon mirin","1 tablespoon brown rice vinegar","big pinch
+                  of ground cumin","1/3 cup / 80 ml plain yogurt","1-2
+                  tablespoons heavy cream, or to taste","1 small ripe avocado,
+                  sliced"]}],"dinner":[{"recipeLabel":"Dinner Tonight: Tadka
+                  Dal","recipeImageURL":"https://edamam-product-images.s3.amazonaws.com/web-img/663/663ef287815b43584e9b7d14c3dcd03b.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIB1tMmvD2YQl87RruF01VhWryOpXrpmNYixybkvOFa4FAiEA58l%2BV8oGNR%2FSmVuUi%2BeTICY8maxtxdrl3hyljCnhZpYq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDAFGjqp45jpgVAnHECrXA7pQhzqawpUCg%2BaPJfIe00eWgGnUfCoV58LodzzxFWmh5%2BXS%2FWJ%2B4lrxxlQj%2BGVHPfxFVNFbpkH9L9tIj4qcKGg7eTcjP8xd0mGHLZPZCLUjvHC%2F2EWcxzih7lNlZkQ3GYALsqLkPfYwTfgGIWvk%2F%2BhcDkiQdnDIWwCGJJtzKC6Di1q9%2F6GHtU3nzBRFldTTrtX6BoIJVKBGrzuIHkxG7PqDTfx8lOPD6XlSs3EJSLJ%2BVa%2BFDL5XFDJJFQvrN4lo7bydki8w3zqM3Zou4RqU9sBgBdsRK25bWh7FpuuZjvQJE%2Fq0%2B7FNV8%2FZGpdZUwA1DsPJDiAnonYE0k%2FQ0VZS755fwpHWvVZevpsTt3U3pXvlmjysRx%2BnelJujcNLJQxxaNQN40jO8zcsLsFn9tME86kd5bLkeNVdihp%2FlVp6%2B0cQhSaWCU4bHKCf6a0ZWcM03sCAU6QaGTbVovKpfGj8x4nwzgdJOzYmZhRuua3pilEMcbblelifbnaiFv02MThl3WGne09iDmvCeFM2UPMpNPzjs3%2BieqsltPpES3qfq6VCDoYP8aZioLD%2FrXcH4aa%2F6lqruj8xwE5WdcQvxX6RjaYBMJlk17knb%2F2f3IC7eWbkouEzyH39LTCxpJWSBjqlAen2YY0hapxObYU%2FwrN85xyAJC174srUXkehQ793p1T919Cshakl1X1AR2p0qH9z1E51kPk%2FQt294oDTpPO7G2nclAC4GsId5qoUOKYgyRvNElDtDM9gxOII%2Fn7cVk2Sqn35Zdont24PvHBXCYamtcRU21YciawP1gnAdIUKngsVA6uF6B5F8skEA71xhglmLld2ycnlghH9N%2F2LXKfMplRpoM2oig%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074511Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFJQMIJW4V%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=42e8392dcf011126c83973079750c4079b3fb34e4f8da489235ff1097dce9bed","recipeURL":"http://www.seriouseats.com/recipes/2009/04/dinner-tonight-tadka-dal-recipe.html","recipeCalories":2202.9070000000006,"recipeIngredients":["1
+                  2-inch piece ginger, peeled, sliced","6 cloves garlic,
+                  crushed","1/2 cup ghee","2 yellow onions, thinly sliced","1/2
+                  teaspoon cayenne pepper","1 tablespoon ground coriander","2
+                  teaspoons ground cumin","2 teaspoons turmeric","1 1/2 cups
+                  masoor dal (hulled red lentils)","Salt","2 teaspoons black
+                  mustard seeds","1 teaspoon cumin seeds","2 Thai green chilies,
+                  stemmed and sliced"]}],"breakfast":[{"recipeLabel":"Breakfast
+                  Fried
+                  Rice","recipeImageURL":"https://edamam-product-images.s3.amazonaws.com/web-img/96a/96a2c1573c7f08dc61f6079fb03e1693.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIAqugKMMZQ10Nz8kCwCvdQ2wRF0HBtG2W21uEuOTHG8wAiEAjnIXDyXCVRVvV%2FuKLDHM23zMq3%2BRRGZaID7RHSXVVUIq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDNAznqmqV%2FKjVHRBHirXA3rzIMmBM9aub4YAfg0xReHEJc1zSZjeqXTfYTbqMg3yiiVD86CJQjJIGfm2mh8oIcMpt3h%2FQZ8QmLGm4zulpV44WMbDXG7Gr97hdmC61IryF7Dq8teG4nb6SX5kESmQQRU4eeNzwB0G5Nzobudtv5au92AvBw5tLSswj%2BOj75iNSwFmG9WJraOCgg8wJMyHpb87eFQ2o9Gna14iquDDIQTzABuY%2FP4kIqjWwfN4eYAsfxyLhhe3CjPn0Dx%2B%2Fq1rWG0FcSoMmwItdNjMzc%2BuAjELrW7Lafd15JBSYQSq6Vtb8TjRPjEJSWZUqn%2BgxmYNw%2B1sE51XXNKznH1ZmVMeIsnpif8TDMDdAWxbENp8b3STx4A9W5nPIP00RViJCETOJbN%2BRKHLOmWIKmj97tliPugA4bU%2BPW0g2XcjY2b08z863VyQmWueOWV2hXuZPmK8i21DsOQp0N1%2BOF6QJHmpGuDOCpqe8DXyZ4cnWrJAUIHYDbx1S0Wvy91hh1SZkjim5REg6Z97gEwchJ21vgWeRKH2m6a6ndy5g%2FoGLr2XuXATp53TJ26eLUKGnQV%2BEBAQakZm6fCLLSL4RxPNxN6SB7KZmUlFChmgUsr8qQh35ndgwCjYIE7D7DD%2Fo5WSBjqlAZ7%2FwZVYJPdhVeRtIReb8ZzpO2bIh%2BRW2%2Fq%2B7UJZaqoPntff7oUfhT6RO5rMCQJXFjUHbg9pEpNro022J6E41DqmC2YXWWwVBTnM8YqPIgvDyC%2BFRrCVPo8hcgqwbIkDXkCS14xCRPNK8Ph%2BlI%2BT1nKWfYbs2ouw6TwPQ8i6K4CPzbkMCGUHVHrlMFIJh81tGtk%2BhPI%2FUXkWDxmTSFJX5s8Y41rtMA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074510Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFLS6NCMJZ%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=dde51af37ddda585782d0cbf00d8d9f65c87ac1c64217aaeb53e9639c5ed82e2","recipeURL":"https://www.realsimple.com/food-recipes/browse-all-recipes/breakfast-fried-rice","recipeCalories":1032.733486,"recipeIngredients":["1/2
+                  yellow onion, finely chopped","2 cloves garlic, minced","1
+                  tablespoon olive oil","4 small breakfast sausages","2 cup
+                  cooked rice","2 tablespoons soy sauce","1 teaspoon rice
+                  vinegar","1 teaspoon toasted sesame oil","1 teaspoon
+                  sriracha","3 eggs","3 tablespoons scallions","Salt and
+                  pepper"]}]}
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:45:59 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                user_id: 4
+                dietary_preferences: balanced
+                plan_type: '7'
+                range_calories: 400-600
+                meal_plans: >-
+                  {"lunch":[{"recipeLabel":"An Ideal Lunch Salad
+                  recipes","recipeImageURL":"https://edamam-product-images.s3.amazonaws.com/web-img/be9/be98aafdbc8aa7e3901405890eb46316?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIAqugKMMZQ10Nz8kCwCvdQ2wRF0HBtG2W21uEuOTHG8wAiEAjnIXDyXCVRVvV%2FuKLDHM23zMq3%2BRRGZaID7RHSXVVUIq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDNAznqmqV%2FKjVHRBHirXA3rzIMmBM9aub4YAfg0xReHEJc1zSZjeqXTfYTbqMg3yiiVD86CJQjJIGfm2mh8oIcMpt3h%2FQZ8QmLGm4zulpV44WMbDXG7Gr97hdmC61IryF7Dq8teG4nb6SX5kESmQQRU4eeNzwB0G5Nzobudtv5au92AvBw5tLSswj%2BOj75iNSwFmG9WJraOCgg8wJMyHpb87eFQ2o9Gna14iquDDIQTzABuY%2FP4kIqjWwfN4eYAsfxyLhhe3CjPn0Dx%2B%2Fq1rWG0FcSoMmwItdNjMzc%2BuAjELrW7Lafd15JBSYQSq6Vtb8TjRPjEJSWZUqn%2BgxmYNw%2B1sE51XXNKznH1ZmVMeIsnpif8TDMDdAWxbENp8b3STx4A9W5nPIP00RViJCETOJbN%2BRKHLOmWIKmj97tliPugA4bU%2BPW0g2XcjY2b08z863VyQmWueOWV2hXuZPmK8i21DsOQp0N1%2BOF6QJHmpGuDOCpqe8DXyZ4cnWrJAUIHYDbx1S0Wvy91hh1SZkjim5REg6Z97gEwchJ21vgWeRKH2m6a6ndy5g%2FoGLr2XuXATp53TJ26eLUKGnQV%2BEBAQakZm6fCLLSL4RxPNxN6SB7KZmUlFChmgUsr8qQh35ndgwCjYIE7D7DD%2Fo5WSBjqlAZ7%2FwZVYJPdhVeRtIReb8ZzpO2bIh%2BRW2%2Fq%2B7UJZaqoPntff7oUfhT6RO5rMCQJXFjUHbg9pEpNro022J6E41DqmC2YXWWwVBTnM8YqPIgvDyC%2BFRrCVPo8hcgqwbIkDXkCS14xCRPNK8Ph%2BlI%2BT1nKWfYbs2ouw6TwPQ8i6K4CPzbkMCGUHVHrlMFIJh81tGtk%2BhPI%2FUXkWDxmTSFJX5s8Y41rtMA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074510Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3599&X-Amz-Credential=ASIASXCYXIIFLS6NCMJZ%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=2ddf9f4621f5e2fa219f36edaf143bb96b631915f85da4cd8ccf84f7f5856f58","recipeURL":"http://www.101cookbooks.com/archives/an-ideal-lunch-salad-recipe.html","recipeCalories":1673.1140569281772,"recipeIngredients":["3
+                  celery stalks, very thinly sliced","1 cup chickpeas
+                  (equivalent 14-ounce can), drained/rinsed","3 handfuls arugula
+                  or shredded romaine lettuce","1/3 cup toasted pepitas or
+                  almonds","15 black olives, chopped","1/2 small red onion,
+                  finely diced","1 small head of broccoli florets, blanched","1
+                  medium clove garlic, smashed","1 tablespoon white miso","1
+                  tablespoon mirin","1 tablespoon brown rice vinegar","big pinch
+                  of ground cumin","1/3 cup / 80 ml plain yogurt","1-2
+                  tablespoons heavy cream, or to taste","1 small ripe avocado,
+                  sliced"]}],"dinner":[{"recipeLabel":"Dinner Tonight: Tadka
+                  Dal","recipeImageURL":"https://edamam-product-images.s3.amazonaws.com/web-img/663/663ef287815b43584e9b7d14c3dcd03b.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIB1tMmvD2YQl87RruF01VhWryOpXrpmNYixybkvOFa4FAiEA58l%2BV8oGNR%2FSmVuUi%2BeTICY8maxtxdrl3hyljCnhZpYq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDAFGjqp45jpgVAnHECrXA7pQhzqawpUCg%2BaPJfIe00eWgGnUfCoV58LodzzxFWmh5%2BXS%2FWJ%2B4lrxxlQj%2BGVHPfxFVNFbpkH9L9tIj4qcKGg7eTcjP8xd0mGHLZPZCLUjvHC%2F2EWcxzih7lNlZkQ3GYALsqLkPfYwTfgGIWvk%2F%2BhcDkiQdnDIWwCGJJtzKC6Di1q9%2F6GHtU3nzBRFldTTrtX6BoIJVKBGrzuIHkxG7PqDTfx8lOPD6XlSs3EJSLJ%2BVa%2BFDL5XFDJJFQvrN4lo7bydki8w3zqM3Zou4RqU9sBgBdsRK25bWh7FpuuZjvQJE%2Fq0%2B7FNV8%2FZGpdZUwA1DsPJDiAnonYE0k%2FQ0VZS755fwpHWvVZevpsTt3U3pXvlmjysRx%2BnelJujcNLJQxxaNQN40jO8zcsLsFn9tME86kd5bLkeNVdihp%2FlVp6%2B0cQhSaWCU4bHKCf6a0ZWcM03sCAU6QaGTbVovKpfGj8x4nwzgdJOzYmZhRuua3pilEMcbblelifbnaiFv02MThl3WGne09iDmvCeFM2UPMpNPzjs3%2BieqsltPpES3qfq6VCDoYP8aZioLD%2FrXcH4aa%2F6lqruj8xwE5WdcQvxX6RjaYBMJlk17knb%2F2f3IC7eWbkouEzyH39LTCxpJWSBjqlAen2YY0hapxObYU%2FwrN85xyAJC174srUXkehQ793p1T919Cshakl1X1AR2p0qH9z1E51kPk%2FQt294oDTpPO7G2nclAC4GsId5qoUOKYgyRvNElDtDM9gxOII%2Fn7cVk2Sqn35Zdont24PvHBXCYamtcRU21YciawP1gnAdIUKngsVA6uF6B5F8skEA71xhglmLld2ycnlghH9N%2F2LXKfMplRpoM2oig%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074511Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFJQMIJW4V%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=42e8392dcf011126c83973079750c4079b3fb34e4f8da489235ff1097dce9bed","recipeURL":"http://www.seriouseats.com/recipes/2009/04/dinner-tonight-tadka-dal-recipe.html","recipeCalories":2202.9070000000006,"recipeIngredients":["1
+                  2-inch piece ginger, peeled, sliced","6 cloves garlic,
+                  crushed","1/2 cup ghee","2 yellow onions, thinly sliced","1/2
+                  teaspoon cayenne pepper","1 tablespoon ground coriander","2
+                  teaspoons ground cumin","2 teaspoons turmeric","1 1/2 cups
+                  masoor dal (hulled red lentils)","Salt","2 teaspoons black
+                  mustard seeds","1 teaspoon cumin seeds","2 Thai green chilies,
+                  stemmed and sliced"]}],"breakfast":[{"recipeLabel":"Breakfast
+                  Fried
+                  Rice","recipeImageURL":"https://edamam-product-images.s3.amazonaws.com/web-img/96a/96a2c1573c7f08dc61f6079fb03e1693.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIAqugKMMZQ10Nz8kCwCvdQ2wRF0HBtG2W21uEuOTHG8wAiEAjnIXDyXCVRVvV%2FuKLDHM23zMq3%2BRRGZaID7RHSXVVUIq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDNAznqmqV%2FKjVHRBHirXA3rzIMmBM9aub4YAfg0xReHEJc1zSZjeqXTfYTbqMg3yiiVD86CJQjJIGfm2mh8oIcMpt3h%2FQZ8QmLGm4zulpV44WMbDXG7Gr97hdmC61IryF7Dq8teG4nb6SX5kESmQQRU4eeNzwB0G5Nzobudtv5au92AvBw5tLSswj%2BOj75iNSwFmG9WJraOCgg8wJMyHpb87eFQ2o9Gna14iquDDIQTzABuY%2FP4kIqjWwfN4eYAsfxyLhhe3CjPn0Dx%2B%2Fq1rWG0FcSoMmwItdNjMzc%2BuAjELrW7Lafd15JBSYQSq6Vtb8TjRPjEJSWZUqn%2BgxmYNw%2B1sE51XXNKznH1ZmVMeIsnpif8TDMDdAWxbENp8b3STx4A9W5nPIP00RViJCETOJbN%2BRKHLOmWIKmj97tliPugA4bU%2BPW0g2XcjY2b08z863VyQmWueOWV2hXuZPmK8i21DsOQp0N1%2BOF6QJHmpGuDOCpqe8DXyZ4cnWrJAUIHYDbx1S0Wvy91hh1SZkjim5REg6Z97gEwchJ21vgWeRKH2m6a6ndy5g%2FoGLr2XuXATp53TJ26eLUKGnQV%2BEBAQakZm6fCLLSL4RxPNxN6SB7KZmUlFChmgUsr8qQh35ndgwCjYIE7D7DD%2Fo5WSBjqlAZ7%2FwZVYJPdhVeRtIReb8ZzpO2bIh%2BRW2%2Fq%2B7UJZaqoPntff7oUfhT6RO5rMCQJXFjUHbg9pEpNro022J6E41DqmC2YXWWwVBTnM8YqPIgvDyC%2BFRrCVPo8hcgqwbIkDXkCS14xCRPNK8Ph%2BlI%2BT1nKWfYbs2ouw6TwPQ8i6K4CPzbkMCGUHVHrlMFIJh81tGtk%2BhPI%2FUXkWDxmTSFJX5s8Y41rtMA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074510Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFLS6NCMJZ%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=dde51af37ddda585782d0cbf00d8d9f65c87ac1c64217aaeb53e9639c5ed82e2","recipeURL":"https://www.realsimple.com/food-recipes/browse-all-recipes/breakfast-fried-rice","recipeCalories":1032.733486,"recipeIngredients":["1/2
+                  yellow onion, finely chopped","2 cloves garlic, minced","1
+                  tablespoon olive oil","4 small breakfast sausages","2 cup
+                  cooked rice","2 tablespoons soy sauce","1 teaspoon rice
+                  vinegar","1 teaspoon toasted sesame oil","1 teaspoon
+                  sriracha","3 eggs","3 tablespoons scallions","Salt and
+                  pepper"]}]}
+  /api/v1/open-api/food/:
+    get:
+      tags:
+        - open-api
+      summary: Get Food
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: query
+          schema:
+            type: string
+          example: nasi
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:24:11 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  - title: Nasi Kuning
+                    img_url: ''
+                    calories: 147.7505023987484
+                    protein: 2.8580832068966484
+                    carbs: 24.26482701753461
+                    fat: 4.347452587721525
+                    serving_size: 0
+                  - title: Nasi Goreng
+                    img_url: ''
+                    calories: 164.94612796273404
+                    protein: 7.333404114945767
+                    carbs: 21.240584863541997
+                    fat: 5.483763189174056
+                    serving_size: 0
+                  - title: Nasi Lemak
+                    img_url: ''
+                    calories: 161.64920306696953
+                    protein: 4.855907597355939
+                    carbs: 21.348427588646796
+                    fat: 6.514657997223789
+                    serving_size: 0
+                  - title: Prawn Nasi Goreng
+                    img_url: ''
+                    calories: 111.71157197465415
+                    protein: 5.815716578162532
+                    carbs: 13.25713752741727
+                    fat: 3.8978542496191078
+                    serving_size: 0
+                  - title: Indonesian Nasi Goreng
+                    img_url: ''
+                    calories: 141.77049583186414
+                    protein: 5.596042103998314
+                    carbs: 21.21643879752832
+                    fat: 3.8781237538020323
+                    serving_size: 0
+                  - title: Spicy Nasi Goreng
+                    img_url: ''
+                    calories: 142.8284638683304
+                    protein: 4.156089906541529
+                    carbs: 22.03352213522185
+                    fat: 4.470984477491133
+                    serving_size: 0
+                  - title: Nasi Goreng With Pork
+                    img_url: ''
+                    calories: 178.9988764222972
+                    protein: 10.608602110584643
+                    carbs: 18.156489273226477
+                    fat: 6.8544541976472635
+                    serving_size: 0
+                  - title: Coconut Rice (Nasi Lemak)
+                    img_url: ''
+                    calories: 173.50976060365213
+                    protein: 3.332625752063243
+                    carbs: 28.202787708470062
+                    fat: 5.3485621963309935
+                    serving_size: 0
+                  - title: Nasi Goreng (Fried Rice)
+                    img_url: ''
+                    calories: 189.68286373644818
+                    protein: 9.12483581517109
+                    carbs: 21.071020856023452
+                    fat: 7.419418549616953
+                    serving_size: 0
+                  - title: Nasi Goreng With Fried Egg
+                    img_url: ''
+                    calories: 118.18232814668717
+                    protein: 4.944100596571859
+                    carbs: 14.977488302233205
+                    fat: 4.336253645925744
+                    serving_size: 0
+                  - title: Indonesian Nasi Goreng
+                    img_url: >-
+                      https://www.edamam.com/food-img/4ac/4ac12e0ab265afdf83990659f2cfa3ba.jpg
+                    calories: 179.6875
+                    protein: 3.90625
+                    carbs: 32.8125
+                    fat: 3.90625
+                    serving_size: 2
+                  - title: Nasi Goreng (Indonesian Fried Rice)
+                    img_url: ''
+                    calories: 175.1379654477377
+                    protein: 6.878940936901087
+                    carbs: 23.301086185837583
+                    fat: 5.867599448962845
+                    serving_size: 0
+                  - title: Tesco Nasi Goreng Paste 185g
+                    img_url: >-
+                      https://www.edamam.com/food-img/eee/eeebb4ae7c0da76d45825e807aad2168.jpeg
+                    calories: 111.1376672865
+                    protein: 1.7999999523162842
+                    carbs: 20.100000381469727
+                    fat: 2.0999999046325684
+                    serving_size: 0
+                  - title: Safeway Select Rice Nasi Goreng, 16.0 Oz
+                    img_url: >-
+                      https://www.edamam.com/food-img/b91/b911581fa3e85fbe13d2c4323777d722.jpg
+                    calories: 165.3466966386582
+                    protein: 3.9683207193277967
+                    carbs: 39.683207193277966
+                    fat: 0.6613867865546328
+                    serving_size: 3
+                  - title: Ayam Nasi Goreng Malay Paste for Stir Fry Rice 185g
+                    img_url: >-
+                      https://www.edamam.com/food-img/29d/29d0b199347497e167fc2f6a9b56785d.jpeg
+                    calories: 203.87189289330001
+                    protein: 1.5
+                    carbs: 14.899999618530273
+                    fat: 15.199999809265137
+                    serving_size: 0
+                  - title: >-
+                      Asian Home Gourmet, Spice Mix for Singapore Coconut Rice,
+                      Nasi Lemak
+                    img_url: ''
+                    calories: 350
+                    protein: 0
+                    carbs: 60
+                    fat: 10
+                    serving_size: 0
+                  - title: >-
+                      Asian Home Gourmet Spice Paste for Indonesian Nasi Goreng
+                      Sambal Fried Rice, Mild, 1.75 Oz
+                    img_url: >-
+                      https://www.edamam.com/food-img/6cd/6cd339a48b866d3290e1dfe6d428a836.jpg
+                    calories: 241.87859622569425
+                    protein: 0
+                    carbs: 24.187859622569427
+                    fat: 12.093929811284713
+                    serving_size: 4
+  /api/v1/open-api/meal-plan:
+    post:
+      tags:
+        - open-api
+      summary: Get Meal Plan
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                dietaryPreferences: balanced
+                planType: '1'
+                rangeCalories: 400-600
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=UTF-8
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            Date:
+              schema:
+                type: string
+                example: Thu, 31 Mar 2022 07:45:10 GMT
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                meta:
+                  code: 200
+                  message: success
+                data:
+                  lunch:
+                    - recipeLabel: An Ideal Lunch Salad recipes
+                      recipeImageURL: >-
+                        https://edamam-product-images.s3.amazonaws.com/web-img/be9/be98aafdbc8aa7e3901405890eb46316?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIAqugKMMZQ10Nz8kCwCvdQ2wRF0HBtG2W21uEuOTHG8wAiEAjnIXDyXCVRVvV%2FuKLDHM23zMq3%2BRRGZaID7RHSXVVUIq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDNAznqmqV%2FKjVHRBHirXA3rzIMmBM9aub4YAfg0xReHEJc1zSZjeqXTfYTbqMg3yiiVD86CJQjJIGfm2mh8oIcMpt3h%2FQZ8QmLGm4zulpV44WMbDXG7Gr97hdmC61IryF7Dq8teG4nb6SX5kESmQQRU4eeNzwB0G5Nzobudtv5au92AvBw5tLSswj%2BOj75iNSwFmG9WJraOCgg8wJMyHpb87eFQ2o9Gna14iquDDIQTzABuY%2FP4kIqjWwfN4eYAsfxyLhhe3CjPn0Dx%2B%2Fq1rWG0FcSoMmwItdNjMzc%2BuAjELrW7Lafd15JBSYQSq6Vtb8TjRPjEJSWZUqn%2BgxmYNw%2B1sE51XXNKznH1ZmVMeIsnpif8TDMDdAWxbENp8b3STx4A9W5nPIP00RViJCETOJbN%2BRKHLOmWIKmj97tliPugA4bU%2BPW0g2XcjY2b08z863VyQmWueOWV2hXuZPmK8i21DsOQp0N1%2BOF6QJHmpGuDOCpqe8DXyZ4cnWrJAUIHYDbx1S0Wvy91hh1SZkjim5REg6Z97gEwchJ21vgWeRKH2m6a6ndy5g%2FoGLr2XuXATp53TJ26eLUKGnQV%2BEBAQakZm6fCLLSL4RxPNxN6SB7KZmUlFChmgUsr8qQh35ndgwCjYIE7D7DD%2Fo5WSBjqlAZ7%2FwZVYJPdhVeRtIReb8ZzpO2bIh%2BRW2%2Fq%2B7UJZaqoPntff7oUfhT6RO5rMCQJXFjUHbg9pEpNro022J6E41DqmC2YXWWwVBTnM8YqPIgvDyC%2BFRrCVPo8hcgqwbIkDXkCS14xCRPNK8Ph%2BlI%2BT1nKWfYbs2ouw6TwPQ8i6K4CPzbkMCGUHVHrlMFIJh81tGtk%2BhPI%2FUXkWDxmTSFJX5s8Y41rtMA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074510Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3599&X-Amz-Credential=ASIASXCYXIIFLS6NCMJZ%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=2ddf9f4621f5e2fa219f36edaf143bb96b631915f85da4cd8ccf84f7f5856f58
+                      recipeURL: >-
+                        http://www.101cookbooks.com/archives/an-ideal-lunch-salad-recipe.html
+                      recipeCalories: 1673.1140569281772
+                      recipeIngredients:
+                        - 3 celery stalks, very thinly sliced
+                        - >-
+                          1 cup chickpeas (equivalent 14-ounce can),
+                          drained/rinsed
+                        - 3 handfuls arugula or shredded romaine lettuce
+                        - 1/3 cup toasted pepitas or almonds
+                        - 15 black olives, chopped
+                        - 1/2 small red onion, finely diced
+                        - 1 small head of broccoli florets, blanched
+                        - 1 medium clove garlic, smashed
+                        - 1 tablespoon white miso
+                        - 1 tablespoon mirin
+                        - 1 tablespoon brown rice vinegar
+                        - big pinch of ground cumin
+                        - 1/3 cup / 80 ml plain yogurt
+                        - 1-2 tablespoons heavy cream, or to taste
+                        - 1 small ripe avocado, sliced
+                  dinner:
+                    - recipeLabel: 'Dinner Tonight: Tadka Dal'
+                      recipeImageURL: >-
+                        https://edamam-product-images.s3.amazonaws.com/web-img/663/663ef287815b43584e9b7d14c3dcd03b.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIB1tMmvD2YQl87RruF01VhWryOpXrpmNYixybkvOFa4FAiEA58l%2BV8oGNR%2FSmVuUi%2BeTICY8maxtxdrl3hyljCnhZpYq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDAFGjqp45jpgVAnHECrXA7pQhzqawpUCg%2BaPJfIe00eWgGnUfCoV58LodzzxFWmh5%2BXS%2FWJ%2B4lrxxlQj%2BGVHPfxFVNFbpkH9L9tIj4qcKGg7eTcjP8xd0mGHLZPZCLUjvHC%2F2EWcxzih7lNlZkQ3GYALsqLkPfYwTfgGIWvk%2F%2BhcDkiQdnDIWwCGJJtzKC6Di1q9%2F6GHtU3nzBRFldTTrtX6BoIJVKBGrzuIHkxG7PqDTfx8lOPD6XlSs3EJSLJ%2BVa%2BFDL5XFDJJFQvrN4lo7bydki8w3zqM3Zou4RqU9sBgBdsRK25bWh7FpuuZjvQJE%2Fq0%2B7FNV8%2FZGpdZUwA1DsPJDiAnonYE0k%2FQ0VZS755fwpHWvVZevpsTt3U3pXvlmjysRx%2BnelJujcNLJQxxaNQN40jO8zcsLsFn9tME86kd5bLkeNVdihp%2FlVp6%2B0cQhSaWCU4bHKCf6a0ZWcM03sCAU6QaGTbVovKpfGj8x4nwzgdJOzYmZhRuua3pilEMcbblelifbnaiFv02MThl3WGne09iDmvCeFM2UPMpNPzjs3%2BieqsltPpES3qfq6VCDoYP8aZioLD%2FrXcH4aa%2F6lqruj8xwE5WdcQvxX6RjaYBMJlk17knb%2F2f3IC7eWbkouEzyH39LTCxpJWSBjqlAen2YY0hapxObYU%2FwrN85xyAJC174srUXkehQ793p1T919Cshakl1X1AR2p0qH9z1E51kPk%2FQt294oDTpPO7G2nclAC4GsId5qoUOKYgyRvNElDtDM9gxOII%2Fn7cVk2Sqn35Zdont24PvHBXCYamtcRU21YciawP1gnAdIUKngsVA6uF6B5F8skEA71xhglmLld2ycnlghH9N%2F2LXKfMplRpoM2oig%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074511Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFJQMIJW4V%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=42e8392dcf011126c83973079750c4079b3fb34e4f8da489235ff1097dce9bed
+                      recipeURL: >-
+                        http://www.seriouseats.com/recipes/2009/04/dinner-tonight-tadka-dal-recipe.html
+                      recipeCalories: 2202.9070000000006
+                      recipeIngredients:
+                        - 1 2-inch piece ginger, peeled, sliced
+                        - 6 cloves garlic, crushed
+                        - 1/2 cup ghee
+                        - 2 yellow onions, thinly sliced
+                        - 1/2 teaspoon cayenne pepper
+                        - 1 tablespoon ground coriander
+                        - 2 teaspoons ground cumin
+                        - 2 teaspoons turmeric
+                        - 1 1/2 cups masoor dal (hulled red lentils)
+                        - Salt
+                        - 2 teaspoons black mustard seeds
+                        - 1 teaspoon cumin seeds
+                        - 2 Thai green chilies, stemmed and sliced
+                  breakfast:
+                    - recipeLabel: Breakfast Fried Rice
+                      recipeImageURL: >-
+                        https://edamam-product-images.s3.amazonaws.com/web-img/96a/96a2c1573c7f08dc61f6079fb03e1693.jpg?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaCXVzLWVhc3QtMSJHMEUCIAqugKMMZQ10Nz8kCwCvdQ2wRF0HBtG2W21uEuOTHG8wAiEAjnIXDyXCVRVvV%2FuKLDHM23zMq3%2BRRGZaID7RHSXVVUIq%2BgMIEBAAGgwxODcwMTcxNTA5ODYiDNAznqmqV%2FKjVHRBHirXA3rzIMmBM9aub4YAfg0xReHEJc1zSZjeqXTfYTbqMg3yiiVD86CJQjJIGfm2mh8oIcMpt3h%2FQZ8QmLGm4zulpV44WMbDXG7Gr97hdmC61IryF7Dq8teG4nb6SX5kESmQQRU4eeNzwB0G5Nzobudtv5au92AvBw5tLSswj%2BOj75iNSwFmG9WJraOCgg8wJMyHpb87eFQ2o9Gna14iquDDIQTzABuY%2FP4kIqjWwfN4eYAsfxyLhhe3CjPn0Dx%2B%2Fq1rWG0FcSoMmwItdNjMzc%2BuAjELrW7Lafd15JBSYQSq6Vtb8TjRPjEJSWZUqn%2BgxmYNw%2B1sE51XXNKznH1ZmVMeIsnpif8TDMDdAWxbENp8b3STx4A9W5nPIP00RViJCETOJbN%2BRKHLOmWIKmj97tliPugA4bU%2BPW0g2XcjY2b08z863VyQmWueOWV2hXuZPmK8i21DsOQp0N1%2BOF6QJHmpGuDOCpqe8DXyZ4cnWrJAUIHYDbx1S0Wvy91hh1SZkjim5REg6Z97gEwchJ21vgWeRKH2m6a6ndy5g%2FoGLr2XuXATp53TJ26eLUKGnQV%2BEBAQakZm6fCLLSL4RxPNxN6SB7KZmUlFChmgUsr8qQh35ndgwCjYIE7D7DD%2Fo5WSBjqlAZ7%2FwZVYJPdhVeRtIReb8ZzpO2bIh%2BRW2%2Fq%2B7UJZaqoPntff7oUfhT6RO5rMCQJXFjUHbg9pEpNro022J6E41DqmC2YXWWwVBTnM8YqPIgvDyC%2BFRrCVPo8hcgqwbIkDXkCS14xCRPNK8Ph%2BlI%2BT1nKWfYbs2ouw6TwPQ8i6K4CPzbkMCGUHVHrlMFIJh81tGtk%2BhPI%2FUXkWDxmTSFJX5s8Y41rtMA%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20220331T074510Z&X-Amz-SignedHeaders=host&X-Amz-Expires=3600&X-Amz-Credential=ASIASXCYXIIFLS6NCMJZ%2F20220331%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=dde51af37ddda585782d0cbf00d8d9f65c87ac1c64217aaeb53e9639c5ed82e2
+                      recipeURL: >-
+                        https://www.realsimple.com/food-recipes/browse-all-recipes/breakfast-fried-rice
+                      recipeCalories: 1032.733486
+                      recipeIngredients:
+                        - 1/2 yellow onion, finely chopped
+                        - 2 cloves garlic, minced
+                        - 1 tablespoon olive oil
+                        - 4 small breakfast sausages
+                        - 2 cup cooked rice
+                        - 2 tablespoons soy sauce
+                        - 1 teaspoon rice vinegar
+                        - 1 teaspoon toasted sesame oil
+                        - 1 teaspoon sriracha
+                        - 3 eggs
+                        - 3 tablespoons scallions
+                        - Salt and pepper
