@@ -10,11 +10,11 @@
     "name": "dailycalorieapi_test_2"
   },
   "postgres": {
-    "host": "127.0.0.1",
+    "host": "host.docker.internal",
     "port": "5432",
     "user": "postgres",
     "pass": "1167",
-    "name": "daily_calorie_test_1"
+    "name": "postgres"
   },
   "postgres-gcloud": {
     "host": "34.101.105.6",
